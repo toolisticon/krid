@@ -5,9 +5,37 @@ package io.toolisticon.lib.krid.model
  */
 data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 
+  /**
+   * List of orthogonal adjacent cells, starting with 12° clock (`UP`).
+   */
+  val orthogonalAdjacent: List<Cell> by lazy {
+    adjacent(Direction.UP, Direction.RIGHT, Direction.DOWN, Direction.LEFT)
+  }
+
+  /**
+   * List of adjacent cells, starting with 12° clock (`UP`).
+   */
+  val adjacent: List<Cell> by lazy {
+    adjacent(*Direction.values())
+  }
+
+  /**
+   * Return the cell you get when you take the given step.
+   */
+  operator fun invoke(step: StepFn): Cell = step(this)
+
+  /**
+   * Create a new cell with coordinates `x=c1.x + c2.x, y=c1.y + c2.y`.
+   */
   operator fun plus(other: Cell): Cell = copy(x = x + other.x, y = y + other.y)
 
-  operator fun minus(other: Cell): Cell = copy(x = x - other.x, y = y - other.y)
+  /**
+   * Create a new cell with coordinates `x=c1.x - c2.x, y=c1.y - c2.y`.
+   */
+  operator fun minus(other: Cell): Cell {
+    require(this >= other) { "$this has to be >= $other." }
+    return copy(x = x - other.x, y = y - other.y)
+  }
 
   /**
    * A cell is LT when it is up and/or left, RT when it is down and/or right, EQ if same
@@ -29,4 +57,6 @@ data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
       (y > other.y && x >= other.x) -> +1
     else -> -1
   }
+
+  private fun adjacent(vararg directions: Direction): List<Cell> = directions.map { this(it.singleStep) }
 }

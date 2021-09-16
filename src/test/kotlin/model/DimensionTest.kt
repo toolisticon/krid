@@ -10,6 +10,7 @@ internal class DimensionTest {
   @Test
   internal fun `create with width and height`() {
     val dimension = Dimension(5, 4)
+
     assertThat(dimension.width).isEqualTo(5)
     assertThat(dimension.height).isEqualTo(4)
     assertThat(dimension.size).isEqualTo(20)

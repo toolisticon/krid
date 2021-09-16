@@ -1,68 +1,45 @@
 package io.toolisticon.lib.krid.model
 
 import io.toolisticon.lib.krid.Krids.cell
-import io.toolisticon.lib.krid.model.CellTest.Companion.Comparison.*
+import io.toolisticon.lib.krid.Krids.toCell
+import io.toolisticon.lib.krid.Krids.toCells
+import io.toolisticon.lib.krid._test.CellConverter
+import io.toolisticon.lib.krid.model.CellTest.Comparison.*
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.provider.Arguments
-import org.junit.jupiter.params.provider.Arguments.arguments
-import org.junit.jupiter.params.provider.MethodSource
-import java.util.stream.Stream
+import org.junit.jupiter.params.converter.ConvertWith
+import org.junit.jupiter.params.provider.CsvSource
 
 internal class CellTest {
-  companion object {
-    enum class Comparison { LT, EQ, GT }
-
-    /**
-     * 00 01
-     * 10 11
-     */
-    @JvmStatic
-    fun `compare cells - parameters`(): Stream<Arguments> = Stream.of(
-      // 00 EQ 00
-      arguments(cell(0, 0), cell(0, 0), EQ),
-      // 00 LT 01
-      arguments(cell(0, 0), cell(0, 1), LT),
-      // 00 LT 10
-      arguments(cell(0, 0), cell(1, 0), LT),
-      // 00 LT 11
-      arguments(cell(0, 0), cell(1, 1), LT),
-
-      // 01 GT 00
-      arguments(cell(0, 1), cell(0, 0), GT),
-      // 01 EQ 01
-      arguments(cell(0, 1), cell(0, 1), EQ),
-      // 01 LT 10
-      arguments(cell(0, 1), cell(1, 0), LT),
-      // 01 LT 11
-      arguments(cell(0, 1), cell(1, 1), LT),
-
-      // 10 GT 00
-      arguments(cell(1, 0), cell(0, 0), GT),
-      // 10 LT 01
-      arguments(cell(1, 0), cell(0, 1), LT),
-      // 10 LT 10
-      arguments(cell(1, 0), cell(1, 0), EQ),
-      // 10 LT 11
-      arguments(cell(1, 0), cell(1, 1), LT),
-
-      // 11 GT 00
-      arguments(cell(1, 1), cell(0, 0), GT),
-      // 11 GT 01
-      arguments(cell(1, 1), cell(0, 1), GT),
-      // 11 GT 10
-      arguments(cell(1, 1), cell(1, 0), GT),
-      // 11 GT 11
-      arguments(cell(1, 1), cell(1, 1), EQ),
-    )
-
-
-  }
+  enum class Comparison { LT, EQ, GT }
 
   @ParameterizedTest
-  @MethodSource("compare cells - parameters")
-  internal fun `compare cells`(c1: Cell, c2: Cell, expected: Comparison) {
+  @CsvSource(
+    value = [
+      "0 to 0, 0 to 0, EQ",
+      "0 to 0, 0 to 1, LT",
+      "0 to 0, 1 to 0, LT",
+      "0 to 0, 1 to 1, LT",
+
+      "0 to 1, 0 to 0, GT",
+      "0 to 1, 0 to 1, EQ",
+      "0 to 1, 1 to 0, LT",
+      "0 to 1, 1 to 1, LT",
+
+      "1 to 0, 0 to 0, GT",
+      "1 to 0, 0 to 1, LT",
+      "1 to 0, 1 to 0, EQ",
+      "1 to 0, 1 to 1, LT",
+
+      "1 to 1, 0 to 0, GT",
+      "1 to 1, 0 to 1, GT",
+      "1 to 1, 1 to 0, GT",
+      "1 to 1, 1 to 1, EQ",
+    ]
+  )
+  internal fun `compare cells`(@ConvertWith(CellConverter::class) c1: Cell, @ConvertWith(CellConverter::class) c2: Cell, expected: Comparison) {
     when (expected) {
       LT -> assertThat(c1).isLessThan(c2)
       EQ -> assertThat(c1).isEqualByComparingTo(c2)
@@ -70,13 +47,9 @@ internal class CellTest {
     }
   }
 
-
-
   @Test
   internal fun `create a cell from pair`() {
-    val cell = cell(2, 2)
-
-    println(cell)
+    assertThat((2 to 2).toCell()).isEqualTo(cell(2, 2))
   }
 
   @Test
@@ -91,4 +64,43 @@ internal class CellTest {
       .isEqualTo(cell(1, 1))
   }
 
+  @Test
+  internal fun `cell minus cell - fails when other is not lower to the right`() {
+    assertThatThrownBy { cell(0, 0) - cell(1, 0) }
+      .isInstanceOf(IllegalArgumentException::class.java)
+      .hasMessage("Cell(x=0, y=0) has to be >= Cell(x=1, y=0).")
+  }
+
+
+  @Test
+  internal fun `orthogonal adjacent cells`() {
+    val seed = cell(1, 1)
+    assertThat(seed.orthogonalAdjacent)
+      .isEqualTo(
+        listOf(
+          1 to 0,
+          2 to 1,
+          1 to 2,
+          0 to 1,
+        ).toCells()
+      )
+  }
+
+  @Test
+  internal fun `adjacent cells`() {
+    val seed = cell(1, 1)
+    assertThat(seed.adjacent)
+      .isEqualTo(
+        listOf(
+          1 to 0,
+          2 to 0,
+          2 to 1,
+          2 to 2,
+          1 to 2,
+          0 to 2,
+          0 to 1,
+          0 to 0
+        ).toCells()
+      )
+  }
 }

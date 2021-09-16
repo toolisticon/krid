@@ -21,9 +21,19 @@ data class Dimension(
     require(width > 0 && height > 0) { "Values have to be positive numbers (was: $this)." }
   }
 
+  /**
+   * The total area of the 2D grid (width*height), which is also the size of an implementing List.
+   */
   val size = width * height
-  val rowRange: IntRange = 0 until height
-  val columnRange: IntRange = 0 until width
-  val pair = width to height
-}
 
+  /**
+   * the row indices counting from `0` to `height - 1`
+   */
+  val rowRange: IntRange = 0 until height
+
+  /**
+   * the column indices counting from `0` to `width - 1`
+   */
+  val columnRange: IntRange = 0 until width
+
+}

@@ -1,6 +1,8 @@
 package io.toolisticon.lib.krid._test
 
+import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
+import io.toolisticon.lib.krid.model.CellValue
 
 object BooleanKridHelper {
 
@@ -9,6 +11,8 @@ object BooleanKridHelper {
     null,
     parseChar
   )
+
+  fun booleanCellValue(x:Int, y:Int, value:Boolean?): CellValue<Boolean?> = cell(x,y,value)
 
   val parseChar: (Char) -> Boolean? = {
     when (it) {

@@ -10,10 +10,19 @@ import io.toolisticon.lib.krid.model.Dimension
  */
 object Krids {
 
+  /**
+   * Creates a new [Krid] with [Dimension](1,1) containing just the emptyElement value.
+   */
   fun <E> krid(emptyElement: E) = krid(1, 1, emptyElement)
 
+  /**
+   * Creates a new [Krid] with [Dimension](width, height), all cells initialized with the emptyElement value.
+   */
   fun <E> krid(width: Int, height: Int, emptyElement: E) = krid(width, height, emptyElement) { _, _ -> emptyElement }
 
+  /**
+   * Creates a new [Krid] with [Dimension](width, height), all cells initialized by the given BiFunction.
+   */
   fun <E> krid(width: Int, height: Int, emptyElement: E, initialize: (Int, Int) -> E): Krid<E> {
     val cellOf = indexToCell(width)
     return Krid(
@@ -52,10 +61,29 @@ object Krids {
 
   fun cell(x: Int, y: Int) = Cell(x, y)
   fun <E> cell(x: Int, y: Int, value: E) = CellValue(x, y, value)
+  fun <E> cell(cell: Cell, value: E) = cell(cell.x, cell.y, value)
 
-  fun indexToCell(width: Int): (Int) -> Cell = { Cell(it / width, it % width) }
-  fun cellToIndex(width: Int): (Cell) -> Int = { it.x * width + it.y }
+  /**
+   * Given the width of the Krid, this calculates the Cell(x,y) coordinates based on the list index.
+   */
+  fun indexToCell(width: Int): (Int) -> Cell = { Cell(it % width, it / width) }
 
+  /**
+   * Given the width of the Krid, this calculates the the list index value  based on the Cell(x,y) coordinates.
+   */
+  fun cellToIndex(width: Int): (Cell) -> Int = { it.y * width + it.x }
+
+  /**
+   * Transforms a pair of ints to a type safe [Cell].
+   */
   fun Pair<Int, Int>.toCell() = cell(first, second)
 
+  fun List<Pair<Int,Int>>.toCells() = map { it.toCell() }
+
+  val Dimension.pair: Pair<Int, Int> get() = width to height
+//
+//  fun <E> Krid<E>.iterator(): Iterator<CellValue<E>> = sequence {
+//    val cellOf = indexToCell(dimension.width)
+//    list.forEachIndexed { i, e -> yield(CellValue(cellOf(i), e)) }
+//  }.iterator()
 }
