@@ -47,4 +47,27 @@ internal class DimensionTest {
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("Values have to be positive numbers (was: Dimension(width=0, height=0)).")
   }
+
+  @Test
+  internal fun `cells in bound`() {
+    val dimension = Dimension(3, 2)
+
+    assertThat(
+      dimension.filterInBound(
+        cell(5, 5)
+      )
+    ).isEmpty()
+
+    assertThat(
+      dimension.filterInBound(
+        cell(0, 0),
+        cell(1, 1),
+        cell(3, 0),
+        cell(0, 2),
+      )
+    ).containsExactly(
+      cell(0,0),
+      cell(1,1),
+    )
+  }
 }

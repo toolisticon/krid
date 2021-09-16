@@ -36,4 +36,14 @@ data class Dimension(
    */
   val columnRange: IntRange = 0 until width
 
+  /**
+   * Filters given cells and returns only those that are in the bounds of this dimension.
+   */
+  fun filterInBound(cells:List<Cell>) : List<Cell> = cells.filter { it.x in columnRange && it.y in rowRange }
+
 }
+
+/**
+ * Vararg extension for [Dimension.filterInBound].
+ */
+fun Dimension.filterInBound(vararg cells:Cell) : List<Cell> = filterInBound(cells.toList())

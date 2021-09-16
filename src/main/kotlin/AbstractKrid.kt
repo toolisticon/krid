@@ -1,6 +1,5 @@
 package io.toolisticon.lib.krid
 
-import io.toolisticon.lib.krid.Krids.indexToCell
 import io.toolisticon.lib.krid.model.*
 
 abstract class AbstractKrid<E> {
