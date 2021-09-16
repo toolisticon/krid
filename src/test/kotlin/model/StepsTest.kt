@@ -41,27 +41,27 @@ internal class StepsTest {
 
   @Test
   internal fun `step to string`() {
-    assertThat(Direction.LEFT(5).toString())
-      .isEqualTo("LEFT(5)")
+    assertThat(LEFT(5))
+      .hasToString("LEFT(5)")
   }
 
   @Test
   internal fun `can create steps from direction`() {
     var steps = UP + LEFT
-    assertThat(steps.toString()).isEqualTo("UP(1) + LEFT(1)")
+    assertThat(steps).hasToString("UP(1) + LEFT(1)")
 
     steps += DOWN(2)
-    assertThat(steps.toString()).isEqualTo("UP(1) + LEFT(1) + DOWN(2)")
+    assertThat(steps).hasToString("UP(1) + LEFT(1) + DOWN(2)")
   }
 
   @Test
   internal fun `can add stepFn to direction enum`() {
-    assertThat((UP + DOWN(2)).toString())
-      .isEqualTo("UP(1) + DOWN(2)")
-    assertThat((UP + UP).toString())
-      .isEqualTo("UP(1) + UP(1)")
-    assertThat((UP + (LEFT + UP)).toString())
-      .isEqualTo("UP(1) + LEFT(1) + UP(1)")
+    assertThat(UP + DOWN(2))
+      .hasToString("UP(1) + DOWN(2)")
+    assertThat(UP + UP)
+      .hasToString("UP(1) + UP(1)")
+    assertThat(UP + (LEFT + UP))
+      .hasToString("UP(1) + LEFT(1) + UP(1)")
   }
 
   @Test
@@ -73,8 +73,7 @@ internal class StepsTest {
   internal fun `take multiple steps in directions`() {
     val cell = Cell(2, 3)
 
-    val steps: Steps = UP + UP + RIGHT(2) + UP_RIGHT
-
+    val steps: Steps = UP + (UP + RIGHT(2)) + UP_RIGHT
 
     val all = steps.walk(cell)
 
