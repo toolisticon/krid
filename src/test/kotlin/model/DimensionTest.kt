@@ -53,13 +53,13 @@ internal class DimensionTest {
     val dimension = Dimension(3, 2)
 
     assertThat(
-      dimension.filterInBound(
+      dimension.filterInBounds(
         cell(5, 5)
       )
     ).isEmpty()
 
     assertThat(
-      dimension.filterInBound(
+      dimension.filterInBounds(
         cell(0, 0),
         cell(1, 1),
         cell(3, 0),
@@ -69,5 +69,30 @@ internal class DimensionTest {
       cell(0,0),
       cell(1,1),
     )
+  }
+
+  @Test
+  internal fun `cells not in bound`() {
+    val dimension = Dimension(3, 2)
+
+    assertThat(
+      dimension.filterNotInBounds(
+        cell(0, 0),
+        cell(1, 1),
+        cell(3, 0),
+        cell(0, 2),
+      )
+    ).containsExactly(
+      cell(3,0),
+      cell(0,2),
+    )
+  }
+
+  @Test
+  internal fun `predicate is in bounds`() {
+    val dimension = Dimension(2,2)
+
+    assertThat(dimension.isInBounds(cell(1,1))).isTrue
+    assertThat(dimension.isInBounds(cell(1,2))).isFalse
   }
 }

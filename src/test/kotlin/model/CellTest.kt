@@ -1,8 +1,6 @@
 package io.toolisticon.lib.krid.model
 
 import io.toolisticon.lib.krid.Krids.cell
-import io.toolisticon.lib.krid.Krids.toCell
-import io.toolisticon.lib.krid.Krids.toCells
 import io.toolisticon.lib.krid._test.CellConverter
 import io.toolisticon.lib.krid.model.CellTest.Comparison.*
 import org.assertj.core.api.Assertions.assertThat
@@ -90,17 +88,34 @@ internal class CellTest {
   internal fun `adjacent cells`() {
     val seed = cell(1, 1)
     assertThat(seed.adjacent)
-      .isEqualTo(
-        listOf(
-          1 to 0,
-          2 to 0,
-          2 to 1,
-          2 to 2,
-          1 to 2,
-          0 to 2,
-          0 to 1,
-          0 to 0
-        ).toCells()
+      .containsExactlyInAnyOrder(
+        Direction.UP(seed),
+        Direction.UP_RIGHT(seed),
+        Direction.RIGHT(seed),
+        Direction.DOWN_RIGHT(seed),
+        Direction.DOWN(seed),
+        Direction.DOWN_LEFT(seed),
+        Direction.LEFT(seed),
+        Direction.UP_LEFT(seed),
       )
+  }
+
+  @ParameterizedTest
+  @CsvSource(
+    value = [
+      "UP, 1 to 0",
+      "UP_RIGHT, 2 to 0",
+      "RIGHT, 2 to 1",
+      "DOWN_RIGHT, 2 to 2",
+      "DOWN, 1 to 2",
+      "DOWN_LEFT, 0 to 2",
+      "LEFT, 0 to 1",
+      "UP_LEFT, 0 to 0",
+    ]
+  )
+  internal fun directions(direction: Direction, @ConvertWith(CellConverter::class) expected: Cell) {
+    val cell = cell(1, 1)
+
+    assertThat(cell(direction)).isEqualTo(expected)
   }
 }

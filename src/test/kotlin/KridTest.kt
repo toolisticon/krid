@@ -1,9 +1,12 @@
 package io.toolisticon.lib.krid
 
+import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanCellValue
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
+import io.toolisticon.lib.krid._test.isInstanceOf
 import io.toolisticon.lib.krid.model.Dimension
+import org.assertj.core.api.AbstractThrowableAssert
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -62,17 +65,59 @@ internal class KridTest {
 
   @Test
   internal fun `iterate value cells`() {
-    val krid = booleanKrid("""
+    val krid = booleanKrid(
+      """
       t.
       ft
-    """.trimIndent())
+    """.trimIndent()
+    )
 
     assertThat(krid.iterator().asSequence().toList())
       .containsExactly(
-        booleanCellValue(0,0,true),
-        booleanCellValue(1,0,null),
-        booleanCellValue(0,1,false),
-        booleanCellValue(1,1,true),
+        booleanCellValue(0, 0, true),
+        booleanCellValue(1, 0, null),
+        booleanCellValue(0, 1, false),
+        booleanCellValue(1, 1, true),
       )
+  }
+
+  @Test
+  internal fun `set cell value`() {
+    var krid = booleanKrid(
+      """
+      t.
+      ft
+    """.trimIndent()
+    )
+
+    krid += cell(1, 0, true)
+
+    assertThat(krid.row(0)).containsExactly(true, true)
+    assertThat(krid.row(1)).containsExactly(false, true)
+
+    krid += listOf(cell(1, 0, false), cell(0, 1, true))
+    assertThat(krid.row(0)).containsExactly(true, false)
+    assertThat(krid.row(1)).containsExactly(true, true)
+  }
+
+  @Test
+  internal fun `fail to set cell values if cell out of bounds`() {
+    var krid = booleanKrid(
+      """
+      t.
+      ft
+    """.trimIndent()
+    )
+
+    assertThatThrownBy {
+      krid += listOf(
+        cell(0, 0, false),
+        cell(2, 0, true),
+        cell(2, 2, null)
+      )
+    }.isInstanceOf(IllegalArgumentException::class)
+      .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0), Cell(x=2, y=2)].")
+
+
   }
 }

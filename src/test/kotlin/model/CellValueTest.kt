@@ -13,4 +13,13 @@ internal class CellValueTest {
 
     assertThat(cell + cell(5, 6)).isEqualTo(cell(7, 9, true))
   }
+
+  @Test
+  internal fun `create cell value boolean`() {
+    val cellValue: CellValue<Boolean> = CellValue(1, 2, true)
+
+    assertThat(CellValue(Cell(1, 2), true)).isEqualTo(cellValue)
+    assertThat(CellValue(Cell(1, 2), true).cell).isEqualTo(Cell(1, 2))
+  }
+
 }

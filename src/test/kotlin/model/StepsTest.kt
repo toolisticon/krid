@@ -89,7 +89,6 @@ internal class StepsTest {
     assertThat(cell(steps)).isEqualTo(cell(5, 0))
   }
 
-
   @Test
   internal fun `beam down-right - include start`() {
     val beam = DOWN_RIGHT.beam(cell(0, 0), true)

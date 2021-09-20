@@ -1,39 +1,16 @@
 package io.toolisticon.lib.krid
 
-import io.toolisticon.lib.krid.Krids.cellToIndex
-import io.toolisticon.lib.krid.Krids.indexToCell
+import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
-import io.toolisticon.lib.krid.Krids.pair
-import io.toolisticon.lib.krid._test.CellConverter
-import io.toolisticon.lib.krid.model.Cell
+import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
 import io.toolisticon.lib.krid.model.Column
+import io.toolisticon.lib.krid.model.Direction
 import io.toolisticon.lib.krid.model.Row
+import io.toolisticon.lib.krid.model.pair
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.params.ParameterizedTest
-import org.junit.jupiter.params.converter.ConvertWith
-import org.junit.jupiter.params.provider.CsvSource
 
 internal class KridsTest {
-
-  @ParameterizedTest
-  @CsvSource(
-    value = [
-      "3, 0, 0 to 0",
-      "3, 1, 1 to 0",
-      "3, 2, 2 to 0",
-      "3, 3, 0 to 1",
-      "3, 4, 1 to 1",
-      "3, 5, 2 to 1",
-    ]
-  )
-  internal fun `index to cell and back`(width: Int, index: Int, @ConvertWith(CellConverter::class) cell: Cell) {
-    val toCell = indexToCell(width)
-    val toIndex = cellToIndex(width)
-
-    assertThat(toCell(index)).isEqualTo(cell)
-    assertThat(toIndex(cell)).isEqualTo(index)
-  }
 
   @Test
   internal fun `dummy test`() {
@@ -55,7 +32,7 @@ internal class KridsTest {
 
   @Test
   internal fun `init single empty`() {
-    val krid: Krid<Boolean?> = Krids.krid(null)
+    val krid: Krid<Boolean?> = krid(null)
 
     assertThat(krid.dimension.pair).isEqualTo(1 to 1)
     assertThat(krid.emptyElement).isEqualTo(null)
@@ -75,6 +52,45 @@ internal class KridsTest {
     assertThat(krid.column(0)).containsExactly(true, false, false, false)
     assertThat(krid.column(1)).containsExactly(false, true, false, false)
     assertThat(krid.column(2)).containsExactly(false, false, true, false)
+  }
 
+  @Test
+  internal fun `create from rows`() {
+    val krid: Krid<Boolean?> = krid(listOf(
+      listOf(true, null),
+      listOf(null, false),
+    ), null)
+
+    assertThat(krid.column(0)).containsExactly(true, null)
+    assertThat(krid.column(1)).containsExactly(null, false)
+  }
+
+  @Test
+  internal fun `adjacent cells`() {
+    val krid = booleanKrid(
+      """
+      tf.
+      .tf
+      f.t
+    """.trimIndent()
+    )
+
+    assertThat(krid.adjacentCells(cell(0, 0))).containsExactlyInAnyOrder(
+      cell(1, 0),
+      cell(1, 1),
+      cell(0, 1),
+    )
+
+    val c11 = cell(1, 1)
+    assertThat(krid.adjacentCells(1, 1)).containsExactlyInAnyOrder(
+      c11(Direction.UP),
+      c11(Direction.UP_RIGHT),
+      c11(Direction.RIGHT),
+      c11(Direction.DOWN_RIGHT),
+      c11(Direction.DOWN),
+      c11(Direction.DOWN_LEFT),
+      c11(Direction.LEFT),
+      c11(Direction.UP_LEFT),
+    )
   }
 }

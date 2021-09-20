@@ -1,13 +1,14 @@
 package io.toolisticon.lib.krid.model
 
 data class CellValue<E>(val x: Int, val y: Int, val value: E) {
-  companion object {
-    val CellValue<*>.cell: Cell get() = Cell(x = x, y = y)
-  }
+  constructor(cell: Cell, value: E) : this(cell.x, cell.y, value)
+  constructor(pair: Pair<Int, Int>, value: E) : this(pair.toCell(), value = value)
 
-  operator fun plus(cell: Cell) : CellValue<E> = (this.cell + cell).let {
-    copy(x = it.x, y=it.y)
+  val cell = Cell(x, y)
+
+  operator fun plus(cell: Cell): CellValue<E> = (this.cell + cell).let {
+    copy(x = it.x, y = it.y)
   }
 }
 
-
+val <E> List<CellValue<E>>.cells get() = map { it.cell }

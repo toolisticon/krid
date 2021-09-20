@@ -1,5 +1,7 @@
 package io.toolisticon.lib.krid.model
 
+import io.toolisticon.lib.krid.Krids.cell
+
 /**
  * A Cell represents a (x,y)-coordinate inside a Krid.
  */
@@ -60,3 +62,13 @@ data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 
   private fun adjacent(vararg directions: Direction): List<Cell> = directions.map { this(it.singleStep) }
 }
+
+/**
+ * Transforms a pair of [Int]s to a type safe [Cell].
+ */
+fun Pair<Int, Int>.toCell() = cell(first, second)
+
+/**
+ * Tramsforms a list of pairs to list of cells.
+ */
+fun List<Pair<Int, Int>>.toCells() = map { it.toCell() }
