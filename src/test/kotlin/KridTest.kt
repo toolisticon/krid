@@ -36,6 +36,23 @@ internal class KridTest {
   }
 
   @Test
+  internal fun `get multiple values`() {
+    val krid = booleanKrid(
+      """
+      tff
+      ftt
+      fft
+    """.trimIndent()
+    )
+
+    assertThat(krid[listOf(cell(0, 0), cell(1, 2))])
+      .containsExactly(
+        cell(0, 0, true),
+        cell(1, 2, false),
+      )
+  }
+
+  @Test
   internal fun `get rows`() {
     val krid = booleanKrid(
       """
@@ -158,5 +175,70 @@ internal class KridTest {
       assertThat(row(0)).containsExactly(true, false)
       assertThat(row(1)).containsExactly(false, true)
     }
+  }
+
+  @Test
+  internal fun `add two krids - defaults`() {
+    val k1 = booleanKrid(
+      """
+      ...
+      ttt
+      ...
+    """.trimIndent()
+    )
+
+    val k2 = booleanKrid(
+      """
+      tt
+      ff
+    """.trimIndent()
+    ).toAddKrid()
+
+    with(k1 + k2) {
+      assertThat(row(0)).containsExactly(true, true, null)
+      assertThat(row(1)).containsExactly(false, false, true)
+      assertThat(row(2)).containsExactly(null, null, null)
+    }
+  }
+
+  @Test
+  internal fun `add two krids - with transformation`() {
+    val k1 = booleanKrid(
+      """
+      ...
+      ttf
+      ...
+    """.trimIndent()
+    )
+
+    val k2 = booleanKrid(
+      """
+      tt
+      ff
+    """.trimIndent()
+    ).toAddKrid(offset = cell(1, 1)) { o, n -> (o ?: false) && (n ?: false) }
+
+    with(k1 + k2) {
+      assertThat(row(0)).containsExactly(null, null, null)
+      assertThat(row(1)).containsExactly(true, true, false)
+      assertThat(row(2)).containsExactly(null, false, false)
+    }
+  }
+
+  @Test
+  internal fun `add two krid - fail out of bounds`() {
+    assertThatThrownBy {
+      booleanKrid(
+        """
+        ..
+        ..
+      """.trimIndent()
+      ) + booleanKrid(
+        """
+        ttt
+      """.trimIndent()
+      ).toAddKrid()
+    }.isInstanceOf(IllegalArgumentException::class)
+      .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0)].")
   }
 }

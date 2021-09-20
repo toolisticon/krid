@@ -1,8 +1,8 @@
 package io.toolisticon.lib.krid
 
+import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid.model.*
-import io.toolisticon.lib.krid.model.Cell.Companion.requireGreaterThanOrEqual
 
 /**
  * A [Krid] of type `<E>` with given [Dimension].
@@ -43,6 +43,20 @@ data class Krid<E>(
     )
   }
 
+  operator fun plus(add: AddKrid<E>): Krid<E> {
+    dimension.filterNotInBounds(add.cells).also {
+      require(it.isEmpty()) { "Cannot modify values because cells are out of bounds: $it." }
+    }
+
+    val values: List<CellValue<E>> = add.values().map {
+      val old: E = this[it.cell]
+
+      cell(it.cell, add.operation(old, it.value))
+    }
+
+    return this + values
+  }
+
   fun subKrid(upperLeft: Cell, lowerRight: Cell): Krid<E> {
     require(dimension.isInBounds(upperLeft)) { "$upperLeft is out of bounds (dimension=$dimension)." }
     require(dimension.isInBounds(lowerRight)) { "$lowerRight is out of bounds (dimension=$dimension)." }
@@ -60,3 +74,7 @@ data class Krid<E>(
 }
 
 operator fun <E> Krid<E>.plus(cellValue: CellValue<E>): Krid<E> = plus(listOf(cellValue))
+fun <E> Krid<E>.plus(offset: Cell, krid: Krid<E>, operation: (E, E) -> E = { _, new -> new }) = plus(AddKrid(offset, krid, operation))
+
+fun <E> Krid<E>.toAddKrid(offset: Cell = Krids.cell(0, 0), operation: (E, E) -> E = { _, new -> new }) =
+  AddKrid(offset = offset, krid = this, operation = operation)

@@ -26,7 +26,6 @@ abstract class AbstractKrid<E> {
 
   protected val indexTransformer by lazy { IndexTransformer(dimension.width) }
 
-
   /**
    * Checks if the given row-index is in current [Dimension.rowRange].
    *
@@ -76,6 +75,14 @@ internal val <E>AbstractKrid<E>.isEmptyElement: (E) -> Boolean get() = { it == e
  * Convenience extension for [AbstractKrid.get].
  */
 operator fun <E> AbstractKrid<E>.get(cell: Cell) = get(cell.x, cell.y)
+
+operator fun <E> AbstractKrid<E>.get(cells: List<Cell>): List<CellValue<E>> {
+  dimension.filterNotInBounds(cells).also {
+    require(it.isEmpty()) { "Cannot get() because some cells are out of bounds: $it." }
+  }
+
+  return cells.map { cell(it, get(it)) }
+}
 
 fun <E> AbstractKrid<E>.ascii(toChar: (E) -> Char? = { it?.toString()?.first() ?: '.' }): String = this.rows().joinToString(separator = "\n") {
   it.map { e -> toChar(e) ?: '.' }.joinToString(separator = "")

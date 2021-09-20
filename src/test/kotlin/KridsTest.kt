@@ -7,7 +7,9 @@ import io.toolisticon.lib.krid.model.Column
 import io.toolisticon.lib.krid.model.Direction
 import io.toolisticon.lib.krid.model.Row
 import io.toolisticon.lib.krid.model.pair
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class KridsTest {
@@ -56,14 +58,39 @@ internal class KridsTest {
 
   @Test
   internal fun `create from rows`() {
-    val krid: Krid<Boolean?> = krid(listOf(
-      listOf(true, null),
-      listOf(null, false),
-    ), null)
+    val krid: Krid<Boolean?> = krid(
+      listOf(
+        listOf(true, null),
+        listOf(null, false),
+      ), null
+    )
 
     assertThat(krid.column(0)).containsExactly(true, null)
     assertThat(krid.column(1)).containsExactly(null, false)
   }
+
+
+  @Test
+  internal fun `fromRows fails when rows is empty`() {
+    assertThatThrownBy { krid(emptyList(), false) }
+      .isInstanceOf(IllegalArgumentException::class.java)
+      .hasMessage("rows must not be empty: []")
+  }
+
+  @Test
+  internal fun `fromRows fails when a row is empty`() {
+    assertThatThrownBy { krid(listOf(listOf(true), emptyList()), false) }
+      .isInstanceOf(IllegalArgumentException::class.java)
+      .hasMessage("no rows must be empty: [[true], []]")
+  }
+
+  @Test
+  internal fun `fromRows fails when rows have different size`() {
+    assertThatThrownBy { krid(listOf(listOf(true, true), listOf(true)), false) }
+      .isInstanceOf(IllegalArgumentException::class.java)
+      .hasMessage("all rows must have same size: [[true, true], [true]]")
+  }
+
 
   @Test
   internal fun `adjacent cells`() {
