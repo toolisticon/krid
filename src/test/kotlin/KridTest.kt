@@ -6,12 +6,20 @@ import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanCellValue
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
 import io.toolisticon.lib.krid._test.isInstanceOf
 import io.toolisticon.lib.krid.model.Dimension
-import org.assertj.core.api.AbstractThrowableAssert
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 
 internal class KridTest {
+
+  private val innerKrid = booleanKrid(
+    """
+      ....
+      .tf.
+      .ft.
+      ....
+    """.trimIndent()
+  )
 
   @Test
   internal fun `init fails - dimension#size != list#size`() {
@@ -117,7 +125,38 @@ internal class KridTest {
       )
     }.isInstanceOf(IllegalArgumentException::class)
       .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0), Cell(x=2, y=2)].")
+  }
 
+  @Test
+  internal fun `subKrid - ul out of bounds`() {
+    assertThatThrownBy {
+      innerKrid.subKrid(cell(0, 7), cell(2, 2))
+    }.isInstanceOf(IllegalArgumentException::class)
+      .hasMessage("Cell(x=0, y=7) is out of bounds (dimension=Dimension(width=4, height=4)).")
+  }
 
+  @Test
+  internal fun `subKrid - lr out of bounds`() {
+    assertThatThrownBy {
+      innerKrid.subKrid(cell(0, 0), cell(2, 7))
+    }.isInstanceOf(IllegalArgumentException::class)
+      .hasMessage("Cell(x=2, y=7) is out of bounds (dimension=Dimension(width=4, height=4)).")
+  }
+
+  @Test
+  internal fun `subKrid - lr less than ur`() {
+    assertThatThrownBy {
+      innerKrid.subKrid(cell(2, 2), cell(1, 1))
+    }.isInstanceOf(IllegalArgumentException::class)
+      .hasMessage("Cell(x=1, y=1) has to be right and/or down from Cell(x=2, y=2).")
+  }
+
+  @Test
+  internal fun `subKrid - success`() {
+    with(innerKrid.subKrid(cell(1, 1), cell(2, 2))) {
+      assertThat(dimension).isEqualTo(Dimension(2, 2))
+      assertThat(row(0)).containsExactly(true, false)
+      assertThat(row(1)).containsExactly(false, true)
+    }
   }
 }

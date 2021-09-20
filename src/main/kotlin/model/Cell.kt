@@ -6,6 +6,14 @@ import io.toolisticon.lib.krid.Krids.cell
  * A Cell represents a (x,y)-coordinate inside a Krid.
  */
 data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
+  companion object {
+    /**
+     * @throws IllegalArgumentException if first is not >= second
+     */
+    fun requireGreaterThanOrEqual(first: Cell, second: Cell) = require(first >= second) {
+      "$first has to be right and/or down from $second."
+    }
+  }
 
   /**
    * List of orthogonal adjacent cells, starting with 12° clock (`UP`).
@@ -69,6 +77,8 @@ data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 fun Pair<Int, Int>.toCell() = cell(first, second)
 
 /**
- * Tramsforms a list of pairs to list of cells.
+ * Transforms a list of pairs to list of cells.
  */
 fun List<Pair<Int, Int>>.toCells() = map { it.toCell() }
+
+

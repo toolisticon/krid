@@ -1,6 +1,8 @@
 package io.toolisticon.lib.krid
 
+import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid.model.*
+import io.toolisticon.lib.krid.model.Cell.Companion.requireGreaterThanOrEqual
 
 /**
  * A [Krid] of type `<E>` with given [Dimension].
@@ -38,6 +40,21 @@ data class Krid<E>(
     }
     return copy(
       list = mutable.toList()
+    )
+  }
+
+  fun subKrid(upperLeft: Cell, lowerRight: Cell): Krid<E> {
+    require(dimension.isInBounds(upperLeft)) { "$upperLeft is out of bounds (dimension=$dimension)." }
+    require(dimension.isInBounds(lowerRight)) { "$lowerRight is out of bounds (dimension=$dimension)." }
+
+    val newDimension = Dimension(upperLeft, lowerRight)
+
+    return krid(
+      dimension = newDimension,
+      emptyElement = emptyElement,
+      initialize = { x, y ->
+        get(x + upperLeft.x, y + upperLeft.y)
+      }
     )
   }
 }

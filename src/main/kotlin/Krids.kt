@@ -21,15 +21,21 @@ object Krids {
    */
   fun <E> krid(width: Int, height: Int, emptyElement: E) = krid(width, height, emptyElement) { _, _ -> emptyElement }
 
+  fun <E> krid(width: Int, height: Int, emptyElement: E, initialize: (Int, Int) -> E): Krid<E> = krid(
+    dimension = Dimension(width, height),
+    emptyElement = emptyElement,
+    initialize = initialize
+  )
+
   /**
    * Creates a new [Krid] with [Dimension](width, height), all cells initialized by the given BiFunction.
    */
-  fun <E> krid(width: Int, height: Int, emptyElement: E, initialize: (Int, Int) -> E): Krid<E> {
-    val transformer = IndexTransformer(width)
+  fun <E> krid(dimension: Dimension, emptyElement: E, initialize: (Int, Int) -> E): Krid<E> {
+    val transformer = IndexTransformer(dimension.width)
     return Krid(
-      dimension = Dimension(width, height),
+      dimension = dimension,
       emptyElement = emptyElement,
-      list = List(size = width * height) { index ->
+      list = List(size = dimension.size) { index ->
         transformer.toCell(index).let { initialize(it.x, it.y) }
       }
     )

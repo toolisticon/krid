@@ -30,7 +30,7 @@ internal class DimensionTest {
   internal fun `create from two cells - failure`() {
     assertThatThrownBy { Dimension(cell(2, 3), cell(1, 0)) }
       .isInstanceOf(IllegalArgumentException::class.java)
-      .hasMessage("Cell(x=2, y=3) has to be right and/or down from Cell(x=1, y=0).")
+      .hasMessage("Cell(x=1, y=0) has to be right and/or down from Cell(x=2, y=3).")
   }
 
   @Test
@@ -66,8 +66,8 @@ internal class DimensionTest {
         cell(0, 2),
       )
     ).containsExactly(
-      cell(0,0),
-      cell(1,1),
+      cell(0, 0),
+      cell(1, 1),
     )
   }
 
@@ -83,16 +83,16 @@ internal class DimensionTest {
         cell(0, 2),
       )
     ).containsExactly(
-      cell(3,0),
-      cell(0,2),
+      cell(3, 0),
+      cell(0, 2),
     )
   }
 
   @Test
   internal fun `predicate is in bounds`() {
-    val dimension = Dimension(2,2)
+    val dimension = Dimension(2, 2)
 
-    assertThat(dimension.isInBounds(cell(1,1))).isTrue
-    assertThat(dimension.isInBounds(cell(1,2))).isFalse
+    assertThat(dimension.isInBounds(cell(1, 1))).isTrue
+    assertThat(dimension.isInBounds(cell(1, 2))).isFalse
   }
 }

@@ -1,5 +1,7 @@
 package io.toolisticon.lib.krid.model
 
+import io.toolisticon.lib.krid.model.Cell.Companion.requireGreaterThanOrEqual
+
 /**
  * Represents width and height of a [io.toolisticon.lib.krid.Krid].
  */
@@ -14,7 +16,7 @@ data class Dimension(
      * @throws IllegalArgumentException when [upperLeft] is not < [lowerRight].
      */
     operator fun invoke(upperLeft: Cell, lowerRight: Cell): Dimension {
-      require(lowerRight >= upperLeft) { "$upperLeft has to be right and/or down from $lowerRight." }
+      requireGreaterThanOrEqual(lowerRight, upperLeft)
       return Dimension(
         width = lowerRight.x - upperLeft.x + 1,
         height = lowerRight.y - upperLeft.y + 1
