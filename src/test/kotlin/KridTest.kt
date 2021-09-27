@@ -241,4 +241,58 @@ internal class KridTest {
     }.isInstanceOf(IllegalArgumentException::class)
       .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0)].")
   }
+
+  @Test
+  internal fun `adjacent cells`() {
+    val krid: Krid<Char> = krid("""
+      123
+      456
+      789
+    """.trimIndent())
+
+    assertThat(krid.adjacentCells(1,1)).containsExactly(
+      cell(1,0), // up
+      cell(2,0), // up-right
+      cell(2,1), // right
+      cell(2,2), // down-right
+      cell(1,2), // down
+      cell(0,2),
+      cell(0,1),
+      cell(0,0),
+    )
+    assertThat(Krids.krid(false).adjacentCells(0,0)).isEmpty()
+  }
+
+
+  @Test
+  internal fun `orthogonalAdjacent cells`() {
+    val krid: Krid<Char> = krid("""
+      123
+      456
+      789
+    """.trimIndent())
+
+    assertThat(krid.orthogonalAdjacentCells(1,1)).containsExactly(
+      cell(1,0), // up
+      cell(2,1), // right
+      cell(1,2), // down
+      cell(0,1),
+    )
+    assertThat(Krids.krid(false).orthogonalAdjacentCells(0,0)).isEmpty()
+  }
+
+  @Test
+  internal fun `print ascii`() {
+    val string = """
+      abc
+      def
+    """.trimIndent()
+
+    assertThat(krid(string).ascii()).isEqualTo(string)
+
+    assertThat(krid(string).ascii { it.uppercaseChar() }).isEqualTo("""
+      ABC
+      DEF
+    """.trimIndent())
+  }
 }

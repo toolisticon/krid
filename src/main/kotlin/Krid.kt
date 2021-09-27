@@ -14,7 +14,8 @@ data class Krid<E>(
 ) : AbstractKrid<E>() {
 
   init {
-    require(dimension.size == list.size)
+    // dimension must match the size of the internal list.
+    require(dimension.size == list.size) { "$dimension does not match internal size=${list.size}." }
   }
 
   private val rowCache: MutableMap<Int, Row<E>> = mutableMapOf()
@@ -48,7 +49,6 @@ data class Krid<E>(
       require(it.isEmpty()) { "Cannot modify values because cells are out of bounds: $it." }
     }
 
-
     val values: List<CellValue<E>> = add.cellValues.map {
       val old: E = this[it.cell]
 
@@ -75,7 +75,11 @@ data class Krid<E>(
 }
 
 operator fun <E> Krid<E>.plus(cellValue: CellValue<E>): Krid<E> = plus(listOf(cellValue))
-fun <E> Krid<E>.plus(offset: Cell, krid: Krid<E>, operation: (E, E) -> E = { _, new -> new }) = plus(AddKrid(offset, krid, operation))
 
-fun <E> Krid<E>.toAddKrid(offset: Cell = Krids.cell(0, 0), operation: (E, E) -> E = { _, new -> new }) =
+fun <E> Krid<E>.plus(offset: Cell, krid: Krid<E>, operation: (E, E) -> E = { _, new -> new }) = plus(krid.toAddKrid(offset, operation))
+
+/**
+ * Create [AddKrid] of given krid.
+ */
+fun <E> Krid<E>.toAddKrid(offset: Cell = cell(0, 0), operation: (E, E) -> E = { _, new -> new }) =
   AddKrid(offset = offset, krid = this, operation = operation)

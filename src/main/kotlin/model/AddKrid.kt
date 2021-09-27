@@ -2,6 +2,7 @@ package io.toolisticon.lib.krid.model
 
 import io.toolisticon.lib.krid.Krid
 import io.toolisticon.lib.krid.Krids.cell
+import io.toolisticon.lib.krid.sequence
 
 /**
  * Command that wraps the parameters needed to add a krid to another krid.
@@ -31,16 +32,21 @@ data class AddKrid<E>(
   operator fun get(targetCell: Cell): E = with(targetCell - offset) { krid[x, y] }
 
   /**
-   * Calculates
+   * Calculates the new [CellValue] by applying the [operation] to the old value and the value of this [AddKrid].
    */
   operator fun invoke(old: CellValue<E>): CellValue<E> = cell(old.x, old.y, operation(old.value, get(old.cell)))
 
+  /**
+   * All cells of this [AddKrid].
+   */
   val cells by lazy {
     krid.sequence().map { it.cell + offset }.toList()
   }
 
+  /**
+   * All cells with values of the [AddKrid].
+   */
   val cellValues by lazy {
     krid.sequence().map { it + offset }.toList()
   }
-
 }

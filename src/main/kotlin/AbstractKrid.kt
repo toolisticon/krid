@@ -54,27 +54,70 @@ abstract class AbstractKrid<E> {
   fun isEmpty(): Boolean = list.all { isEmptyElement(it) }
 
   /**
+   * Get value at given coordinates.
+   *
    * @param x x coordinate of cell (has to be in bound)
    * @param y y coordinate of cell (has to be in bound)
    * @return value at given coordinates.
    */
   operator fun get(x: Int, y: Int): E = list[indexTransformer.toIndex(requireInColumns(x), requireInRows(y))]
 
+  /**
+   * @return the rows of this krid.
+   */
   fun rows(): Rows<E> = Rows(dimension.rowRange.map(this::row))
+
+  /**
+   * @return the columns of this krid.
+   */
   fun columns(): Columns<E> = Columns(dimension.columnRange.map(this::column))
 
+  /**
+   * @param index which row to get
+   * @return row with index.
+   */
   abstract fun row(index: Int): Row<E>
+
+  /**
+   * @param index which column to get
+   * @return column with index.
+   */
   abstract fun column(index: Int): Column<E>
 
+  /**
+   * Iterate row by row, starting to left to bottom right.
+   *
+   * @return iterator of [CellValue]s.
+   */
   fun iterator(): Iterator<CellValue<E>> = list
     .mapIndexed { index, e -> cell(indexTransformer.toCell(index), e) }
     .iterator()
 
-  fun sequence() : Sequence<CellValue<E>> = iterator().asSequence()
-
+  /**
+   * Returns direct neighbors up, left, rdown and right of given cell.
+   *
+   * @param cell the base cell from which to check neighbors
+   * @return list of cells up, left, down, right (in bounds)
+   */
   fun orthogonalAdjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.orthogonalAdjacent)
+
+  /**
+   * Returns direct neighbors in all 8 directions of given cell.
+   *
+   * @param cell the base cell from which to check neighbors
+   * @return list of cells in all 8 directions (in bounds)
+   */
   fun adjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.adjacent)
 }
+
+
+/**
+ * Sequence of [iterator].
+ *
+ * @see iterator
+ * @return sequence of [CellValue]s.
+ */
+fun <E> AbstractKrid<E>.sequence(): Sequence<CellValue<E>> = iterator().asSequence()
 
 /**
  * Convenient extension for [AbstractKrid.orthogonalAdjacentCells].

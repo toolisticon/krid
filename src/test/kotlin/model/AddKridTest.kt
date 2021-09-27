@@ -1,10 +1,7 @@
 package io.toolisticon.lib.krid.model
 
-import io.toolisticon.lib.krid.Krids
 import io.toolisticon.lib.krid.Krids.cell
-import io.toolisticon.lib.krid._test.BooleanKridHelper
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

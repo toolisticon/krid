@@ -22,4 +22,12 @@ internal class CellValueTest {
     assertThat(CellValue(Cell(1, 2), true).cell).isEqualTo(Cell(1, 2))
   }
 
+  @Test
+  internal fun `create from pair`() {
+    val cellValue = CellValue<Boolean>(1 to 2, true)
+
+    assertThat(cellValue.x).isEqualTo(1)
+    assertThat(cellValue.y).isEqualTo(2)
+    assertThat(cellValue.cell).isEqualTo((1 to 2).toCell())
+  }
 }
