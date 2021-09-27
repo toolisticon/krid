@@ -48,7 +48,8 @@ data class Krid<E>(
       require(it.isEmpty()) { "Cannot modify values because cells are out of bounds: $it." }
     }
 
-    val values: List<CellValue<E>> = add.values().map {
+
+    val values: List<CellValue<E>> = add.cellValues.map {
       val old: E = this[it.cell]
 
       cell(it.cell, add.operation(old, it.value))

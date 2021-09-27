@@ -235,9 +235,9 @@ internal class KridTest {
       """.trimIndent()
       ) + booleanKrid(
         """
-        ttt
+        tt
       """.trimIndent()
-      ).toAddKrid()
+      ).toAddKrid(offset = cell(1,0))
     }.isInstanceOf(IllegalArgumentException::class)
       .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0)].")
   }

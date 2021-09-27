@@ -24,6 +24,9 @@ abstract class AbstractKrid<E> {
    */
   protected abstract val list: List<E>
 
+  /**
+   * Helper to align cell coordinates and list index.
+   */
   protected val indexTransformer by lazy { IndexTransformer(dimension.width) }
 
   /**
@@ -50,8 +53,12 @@ abstract class AbstractKrid<E> {
    */
   fun isEmpty(): Boolean = list.all { isEmptyElement(it) }
 
-
-  operator fun get(x: Int, y: Int): E = list[requireInRows(y) * dimension.width + requireInColumns(x)]
+  /**
+   * @param x x coordinate of cell (has to be in bound)
+   * @param y y coordinate of cell (has to be in bound)
+   * @return value at given coordinates.
+   */
+  operator fun get(x: Int, y: Int): E = list[indexTransformer.toIndex(requireInColumns(x), requireInRows(y))]
 
   fun rows(): Rows<E> = Rows(dimension.rowRange.map(this::row))
   fun columns(): Columns<E> = Columns(dimension.columnRange.map(this::column))
@@ -63,12 +70,29 @@ abstract class AbstractKrid<E> {
     .mapIndexed { index, e -> cell(indexTransformer.toCell(index), e) }
     .iterator()
 
+  fun sequence() : Sequence<CellValue<E>> = iterator().asSequence()
+
   fun orthogonalAdjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.orthogonalAdjacent)
   fun adjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.adjacent)
 }
 
+/**
+ * Convenient extension for [AbstractKrid.orthogonalAdjacentCells].
+ *
+ * @see AbstractKrid.orthogonalAdjacentCells
+ */
 fun <E> AbstractKrid<E>.orthogonalAdjacentCells(x: Int, y: Int) = orthogonalAdjacentCells(cell(x, y))
+
+/**
+ * Convenient extension for [AbstractKrid.adjacentCells].
+ *
+ * @see AbstractKrid.adjacentCells
+ */
 fun <E> AbstractKrid<E>.adjacentCells(x: Int, y: Int) = adjacentCells(cell(x, y))
+
+/**
+ * `true` if a value is equal to the defined [AbstractKrid.emptyElement].
+ */
 internal val <E>AbstractKrid<E>.isEmptyElement: (E) -> Boolean get() = { it == emptyElement }
 
 /**
@@ -76,6 +100,11 @@ internal val <E>AbstractKrid<E>.isEmptyElement: (E) -> Boolean get() = { it == e
  */
 operator fun <E> AbstractKrid<E>.get(cell: Cell) = get(cell.x, cell.y)
 
+/**
+ * Gets multiple [CellValue]s for given list of [Cell]s.
+ *
+ * @see [AbstractKrid.get]
+ */
 operator fun <E> AbstractKrid<E>.get(cells: List<Cell>): List<CellValue<E>> {
   dimension.filterNotInBounds(cells).also {
     require(it.isEmpty()) { "Cannot get() because some cells are out of bounds: $it." }
@@ -84,7 +113,13 @@ operator fun <E> AbstractKrid<E>.get(cells: List<Cell>): List<CellValue<E>> {
   return cells.map { cell(it, get(it)) }
 }
 
+/**
+ * Prints the [Krid] to console by converting the cell contents
+ * to char using given function.
+ *
+ * Defaults to "first char", so `Boolean.TRUE` becomes `t`.
+ * `null` ist represented as `.`.
+ */
 fun <E> AbstractKrid<E>.ascii(toChar: (E) -> Char? = { it?.toString()?.first() ?: '.' }): String = this.rows().joinToString(separator = "\n") {
   it.map { e -> toChar(e) ?: '.' }.joinToString(separator = "")
 }
-
