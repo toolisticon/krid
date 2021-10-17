@@ -278,12 +278,14 @@
               <phase>package</phase>
               <id>attach-javadocs</id>
               <goals>
+                <goal>dokka</goal>
+                <goal>javadoc</goal>
                 <goal>javadocJar</goal>
               </goals>
             </execution>
           </executions>
           <configuration>
-            <jdkVersion>11</jdkVersion>
+            <jdkVersion>8</jdkVersion>
             <!--includes>
               <include>packages.md</include>
               <include>extra.md</include>

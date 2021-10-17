@@ -6,6 +6,10 @@ import io.toolisticon.lib.krid.model.*
 
 /**
  * A [Krid] of type `<E>` with given [Dimension].
+ *
+ * @property dimension width/height dimension
+ * @property emptyElement how to represent an empty cell
+ * @property list internal storage
  */
 data class Krid<E>(
   override val dimension: Dimension,

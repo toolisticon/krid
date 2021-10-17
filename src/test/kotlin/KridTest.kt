@@ -4,6 +4,7 @@ import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanCellValue
 import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
+import io.toolisticon.lib.krid._test.ResourceHelper
 import io.toolisticon.lib.krid._test.isInstanceOf
 import io.toolisticon.lib.krid.model.Dimension
 import org.assertj.core.api.Assertions.assertThat
@@ -293,6 +294,20 @@ internal class KridTest {
     assertThat(krid(string).ascii { it.uppercaseChar() }).isEqualTo("""
       ABC
       DEF
+    """.trimIndent())
+  }
+
+  @Test
+  internal fun `load from resource`() {
+    val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
+
+    assertThat(krid.ascii()).isEqualTo("""
+      fttffttfftttttfffttttttfftttttff
+      fttfttfffttffttffffttffffttffttf
+      fttttfffftttttfffffttffffttffttf
+      fttfttfffttffttffffttffffttffttf
+      fttffttffttffttffttttttfftttttff
+      ffffffffffffffffffffffffffffffff
     """.trimIndent())
   }
 }
