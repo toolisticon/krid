@@ -25,6 +25,9 @@ data class Krid<E>(
   private val rowCache: MutableMap<Int, Row<E>> = mutableMapOf()
   private val columnCache: MutableMap<Int, Column<E>> = mutableMapOf()
 
+  val width = dimension.width
+  val height = dimension.height
+
   override fun row(index: Int): Row<E> = rowCache.computeIfAbsent(
     requireInRows(index)
   ) { Row(index, dimension.columnRange.map { get(it, index) }) }

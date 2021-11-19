@@ -11,6 +11,8 @@ import io.toolisticon.lib.krid.model.Dimension
  */
 object Krids {
 
+  const val DEFAULT_EMPTY_CHAR = '.'
+
   /**
    * Creates a new [Krid] with [Dimension](1,1) containing just the emptyElement value.
    */
@@ -44,7 +46,7 @@ object Krids {
   /**
    * Creates Krid<Char> from given String.
    */
-  fun krid(string: String, emptyElement: Char = '.'): Krid<Char> = krid(string, emptyElement) { it }
+  fun krid(string: String, emptyElement: Char = DEFAULT_EMPTY_CHAR): Krid<Char> = krid(string, emptyElement) { it }
 
 
   fun <E> krid(string: String, emptyElement: E, parse: (Char) -> E): Krid<E> = krid(
