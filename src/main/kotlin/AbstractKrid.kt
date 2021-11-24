@@ -94,7 +94,7 @@ abstract class AbstractKrid<E> {
     .iterator()
 
   /**
-   * Returns direct neighbors up, left, rdown and right of given cell.
+   * Returns direct neighbors up, left, down and right of given cell.
    *
    * @param cell the base cell from which to check neighbors
    * @return list of cells up, left, down, right (in bounds)
@@ -108,6 +108,7 @@ abstract class AbstractKrid<E> {
    * @return list of cells in all 8 directions (in bounds)
    */
   fun adjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.adjacent)
+
 }
 
 

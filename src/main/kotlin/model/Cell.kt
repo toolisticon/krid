@@ -1,11 +1,19 @@
 package io.toolisticon.lib.krid.model
 
 import io.toolisticon.lib.krid.Krids.cell
+import io.toolisticon.lib.krid.model.step.Direction
+import io.toolisticon.lib.krid.model.step.StepFn
+import java.util.*
+
+interface Coordinates {
+  val x: Int
+  val y: Int
+}
 
 /**
  * A Cell represents a (x,y)-coordinate inside a Krid.
  */
-data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
+data class Cell(override val x: Int, override val y: Int) : Comparable<Cell>, Coordinates {
   companion object {
     /**
      * @throws IllegalArgumentException if first is not >= second
@@ -26,7 +34,7 @@ data class Cell(val x: Int, val y: Int) : Comparable<Cell> {
    * List of adjacent cells, starting with 12° clock (`UP`).
    */
   val adjacent: List<Cell> by lazy {
-    adjacent(*Direction.values())
+    adjacent(*Direction.ADJACENT)
   }
 
   /**

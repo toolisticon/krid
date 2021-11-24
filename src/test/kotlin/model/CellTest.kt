@@ -3,6 +3,7 @@ package io.toolisticon.lib.krid.model
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid._test.CellConverter
 import io.toolisticon.lib.krid.model.CellTest.Comparison.*
+import io.toolisticon.lib.krid.model.step.Direction
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -37,7 +38,7 @@ internal class CellTest {
       "1 to 1, 1 to 1, EQ",
     ]
   )
-  internal fun `compare cells`(@ConvertWith(CellConverter::class) c1: Cell, @ConvertWith(CellConverter::class) c2: Cell, expected: Comparison) {
+  fun `compare cells`(@ConvertWith(CellConverter::class) c1: Cell, @ConvertWith(CellConverter::class) c2: Cell, expected: Comparison) {
     when (expected) {
       LT -> assertThat(c1).isLessThan(c2)
       EQ -> assertThat(c1).isEqualByComparingTo(c2)
@@ -46,24 +47,24 @@ internal class CellTest {
   }
 
   @Test
-  internal fun `create a cell from pair`() {
+  fun `create a cell from pair`() {
     assertThat((2 to 2).toCell()).isEqualTo(cell(2, 2))
   }
 
   @Test
-  internal fun `sum two cells - add x and y coordinates`() {
+  fun `sum two cells - add x and y coordinates`() {
     assertThat(cell(2, 3) + cell(5, 7))
       .isEqualTo(cell(7, 10))
   }
 
   @Test
-  internal fun `difference of two cells - subtract x and y coordinates`() {
+  fun `difference of two cells - subtract x and y coordinates`() {
     assertThat(cell(2, 3) - cell(1, 2))
       .isEqualTo(cell(1, 1))
   }
 
   @Test
-  internal fun `cell minus cell - fails when other is not lower to the right`() {
+  fun `cell minus cell - fails when other is not lower to the right`() {
     assertThatThrownBy { cell(0, 0) - cell(1, 0) }
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("Cell(x=0, y=0) has to be >= Cell(x=1, y=0).")
@@ -71,7 +72,7 @@ internal class CellTest {
 
 
   @Test
-  internal fun `orthogonal adjacent cells`() {
+  fun `orthogonal adjacent cells`() {
     val seed = cell(1, 1)
     assertThat(seed.orthogonalAdjacent)
       .isEqualTo(
@@ -85,7 +86,7 @@ internal class CellTest {
   }
 
   @Test
-  internal fun `adjacent cells`() {
+  fun `adjacent cells`() {
     val seed = cell(1, 1)
     assertThat(seed.adjacent)
       .containsExactlyInAnyOrder(
@@ -113,7 +114,7 @@ internal class CellTest {
       "UP_LEFT, 0 to 0",
     ]
   )
-  internal fun directions(direction: Direction, @ConvertWith(CellConverter::class) expected: Cell) {
+  fun directions(direction: Direction, @ConvertWith(CellConverter::class) expected: Cell) {
     val cell = cell(1, 1)
 
     assertThat(cell(direction)).isEqualTo(expected)

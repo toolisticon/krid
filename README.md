@@ -23,4 +23,4 @@ Your one-stop library to support two dimensional kotlin grids.
 ## Design
 
 This lib is designed to be as usable as possible, without being too invasive to your code base and dependency tree. Consequentially, it does not require any transitive dependencies.
-It just uses the core features provided by **JDK 11.x** and **Kotlin 1.5.x**.
+It just uses the core features provided by **JDK 11.x** and **[Kotlin 1.6.x](https://blog.jetbrains.com/kotlin/2021/11/kotlin-1-6-0-is-released/)**.

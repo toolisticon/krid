@@ -15,7 +15,8 @@ data class CellValue<E>(
   /**
    * value
    */
-  val value: E){
+  val value: E
+) {
 
   /**
    * Create from cell and value.

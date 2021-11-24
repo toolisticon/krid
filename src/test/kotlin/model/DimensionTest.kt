@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test
 internal class DimensionTest {
 
   @Test
-  internal fun `create with width and height`() {
+  fun `create with width and height`() {
     val dimension = Dimension(5, 4)
 
     assertThat(dimension.width).isEqualTo(5)
@@ -19,7 +19,7 @@ internal class DimensionTest {
   }
 
   @Test
-  internal fun `create from two cells - success`() {
+  fun `create from two cells - success`() {
     val dimension = Dimension(cell(1, 0), cell(2, 3))
     assertThat(dimension.width).isEqualTo(2)
     assertThat(dimension.height).isEqualTo(4)
@@ -27,14 +27,14 @@ internal class DimensionTest {
   }
 
   @Test
-  internal fun `create from two cells - failure`() {
+  fun `create from two cells - failure`() {
     assertThatThrownBy { Dimension(cell(2, 3), cell(1, 0)) }
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("Cell(x=1, y=0) has to be right and/or down from Cell(x=2, y=3).")
   }
 
   @Test
-  internal fun `fails when values are not gt 0`() {
+  fun `fails when values are not gt 0`() {
     assertThatThrownBy { Dimension(width = 0, height = 1) }
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("Values have to be positive numbers (was: Dimension(width=0, height=1)).")
@@ -49,7 +49,7 @@ internal class DimensionTest {
   }
 
   @Test
-  internal fun `cells in bound`() {
+  fun `cells in bound`() {
     val dimension = Dimension(3, 2)
 
     assertThat(
@@ -72,7 +72,7 @@ internal class DimensionTest {
   }
 
   @Test
-  internal fun `cells not in bound`() {
+  fun `cells not in bound`() {
     val dimension = Dimension(3, 2)
 
     assertThat(
@@ -89,7 +89,7 @@ internal class DimensionTest {
   }
 
   @Test
-  internal fun `predicate is in bounds`() {
+  fun `predicate is in bounds`() {
     val dimension = Dimension(2, 2)
 
     assertThat(dimension.isInBounds(cell(1, 1))).isTrue

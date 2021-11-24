@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test
 internal class ColumnsTest {
 
   @Test
-  internal fun `create columns`() {
+  fun `create columns`() {
     val column = Column(0, listOf(true))
 
     val columns: Columns<Boolean> = Columns(column)

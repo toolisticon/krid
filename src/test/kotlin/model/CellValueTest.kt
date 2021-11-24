@@ -8,14 +8,14 @@ import org.junit.jupiter.api.Test
 internal class CellValueTest {
 
   @Test
-  internal fun `add cell`() {
+  fun `add cell`() {
     val cell = cell(2, 3, true)
 
     assertThat(cell + cell(5, 6)).isEqualTo(cell(7, 9, true))
   }
 
   @Test
-  internal fun `create cell value boolean`() {
+  fun `create cell value boolean`() {
     val cellValue: CellValue<Boolean> = CellValue(1, 2, true)
 
     assertThat(CellValue(Cell(1, 2), true)).isEqualTo(cellValue)
@@ -23,7 +23,7 @@ internal class CellValueTest {
   }
 
   @Test
-  internal fun `create from pair`() {
+  fun `create from pair`() {
     val cellValue = CellValue<Boolean>(1 to 2, true)
 
     assertThat(cellValue.x).isEqualTo(1)

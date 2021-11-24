@@ -23,7 +23,7 @@ internal class IndexTransformerTest {
       "4, 4, 0 to 1",
     ]
   )
-  internal fun `index to cell and back`(width: Int, index: Int, @ConvertWith(CellConverter::class) cell: Cell) {
+  fun `index to cell and back`(width: Int, index: Int, @ConvertWith(CellConverter::class) cell: Cell) {
     val transformer = IndexTransformer(width)
 
     assertThat(transformer.toCell(index)).isEqualTo(cell)

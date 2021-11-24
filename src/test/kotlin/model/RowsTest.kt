@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test
 internal class RowsTest {
 
   @Test
-  internal fun `create rows`() {
+  fun `create rows`() {
     val row = Row(0, listOf(true))
     val rows: Rows<Boolean> = Rows(row)
 

@@ -16,7 +16,7 @@ internal class AddKridTest {
   )
 
   @Test
-  internal fun `create with defaults`() {
+  fun `create with defaults`() {
     val add: AddKrid<Boolean?> = AddKrid(krid = krid)
 
     assertThat(add.cells).containsExactly(
@@ -41,7 +41,7 @@ internal class AddKridTest {
   }
 
   @Test
-  internal fun `create with offset`() {
+  fun `create with offset`() {
     val add: AddKrid<Boolean?> = AddKrid(
       krid = krid,
       offset = cell(1, 1)

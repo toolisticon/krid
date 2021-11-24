@@ -23,13 +23,13 @@ internal class KridTest {
   )
 
   @Test
-  internal fun `init fails - dimension#size != list#size`() {
+  fun `init fails - dimension#size != list#size`() {
     assertThatThrownBy { Krid(Dimension(4, 5), true, List<Boolean>(40) { false }) }
       .isInstanceOf(IllegalArgumentException::class.java)
   }
 
   @Test
-  internal fun `create empty with dimension`() {
+  fun `create empty with dimension`() {
     val krid: Krid<Boolean?> = krid(4, 3, null)
     assertThat(krid.isEmpty()).isTrue
     assertThat(krid.dimension.width).isEqualTo(4)
@@ -37,7 +37,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `get multiple values`() {
+  fun `get multiple values`() {
     val krid = booleanKrid(
       """
       tff
@@ -54,7 +54,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `get rows`() {
+  fun `get rows`() {
     val krid = booleanKrid(
       """
       tff
@@ -72,7 +72,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `get columns`() {
+  fun `get columns`() {
     val krid = booleanKrid(
       """
       tff
@@ -90,7 +90,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `iterate value cells`() {
+  fun `iterate value cells`() {
     val krid = booleanKrid(
       """
       t.
@@ -108,7 +108,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `set cell value`() {
+  fun `set cell value`() {
     var krid = booleanKrid(
       """
       t.
@@ -127,7 +127,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `fail to set cell values if cell out of bounds`() {
+  fun `fail to set cell values if cell out of bounds`() {
     var krid = booleanKrid(
       """
       t.
@@ -146,7 +146,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `subKrid - ul out of bounds`() {
+  fun `subKrid - ul out of bounds`() {
     assertThatThrownBy {
       innerKrid.subKrid(cell(0, 7), cell(2, 2))
     }.isInstanceOf(IllegalArgumentException::class)
@@ -154,7 +154,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `subKrid - lr out of bounds`() {
+  fun `subKrid - lr out of bounds`() {
     assertThatThrownBy {
       innerKrid.subKrid(cell(0, 0), cell(2, 7))
     }.isInstanceOf(IllegalArgumentException::class)
@@ -162,7 +162,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `subKrid - lr less than ur`() {
+  fun `subKrid - lr less than ur`() {
     assertThatThrownBy {
       innerKrid.subKrid(cell(2, 2), cell(1, 1))
     }.isInstanceOf(IllegalArgumentException::class)
@@ -170,7 +170,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `subKrid - success`() {
+  fun `subKrid - success`() {
     with(innerKrid.subKrid(cell(1, 1), cell(2, 2))) {
       assertThat(dimension).isEqualTo(Dimension(2, 2))
       assertThat(row(0)).containsExactly(true, false)
@@ -179,7 +179,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `add two krids - defaults`() {
+  fun `add two krids - defaults`() {
     val k1 = booleanKrid(
       """
       ...
@@ -203,7 +203,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `add two krids - with transformation`() {
+  fun `add two krids - with transformation`() {
     val k1 = booleanKrid(
       """
       ...
@@ -227,7 +227,7 @@ internal class KridTest {
   }
 
   @Test
-  internal fun `add two krid - fail out of bounds`() {
+  fun `add two krid - fail out of bounds`() {
     assertThatThrownBy {
       booleanKrid(
         """
@@ -238,52 +238,56 @@ internal class KridTest {
         """
         tt
       """.trimIndent()
-      ).toAddKrid(offset = cell(1,0))
+      ).toAddKrid(offset = cell(1, 0))
     }.isInstanceOf(IllegalArgumentException::class)
       .hasMessage("Cannot modify values because cells are out of bounds: [Cell(x=2, y=0)].")
   }
 
   @Test
-  internal fun `adjacent cells`() {
-    val krid: Krid<Char> = krid("""
+  fun `adjacent cells`() {
+    val krid: Krid<Char> = krid(
+      """
       123
       456
       789
-    """.trimIndent())
-
-    assertThat(krid.adjacentCells(1,1)).containsExactly(
-      cell(1,0), // up
-      cell(2,0), // up-right
-      cell(2,1), // right
-      cell(2,2), // down-right
-      cell(1,2), // down
-      cell(0,2),
-      cell(0,1),
-      cell(0,0),
+    """.trimIndent()
     )
-    assertThat(Krids.krid(false).adjacentCells(0,0)).isEmpty()
+
+    assertThat(krid.adjacentCells(1, 1)).containsExactly(
+      cell(1, 0), // up
+      cell(2, 0), // up-right
+      cell(2, 1), // right
+      cell(2, 2), // down-right
+      cell(1, 2), // down
+      cell(0, 2),
+      cell(0, 1),
+      cell(0, 0),
+    )
+    assertThat(Krids.krid(false).adjacentCells(0, 0)).isEmpty()
   }
 
 
   @Test
-  internal fun `orthogonalAdjacent cells`() {
-    val krid: Krid<Char> = krid("""
+  fun `orthogonalAdjacent cells`() {
+    val krid: Krid<Char> = krid(
+      """
       123
       456
       789
-    """.trimIndent())
-
-    assertThat(krid.orthogonalAdjacentCells(1,1)).containsExactly(
-      cell(1,0), // up
-      cell(2,1), // right
-      cell(1,2), // down
-      cell(0,1),
+    """.trimIndent()
     )
-    assertThat(Krids.krid(false).orthogonalAdjacentCells(0,0)).isEmpty()
+
+    assertThat(krid.orthogonalAdjacentCells(1, 1)).containsExactly(
+      cell(1, 0), // up
+      cell(2, 1), // right
+      cell(1, 2), // down
+      cell(0, 1),
+    )
+    assertThat(Krids.krid(false).orthogonalAdjacentCells(0, 0)).isEmpty()
   }
 
   @Test
-  internal fun `print ascii`() {
+  fun `print ascii`() {
     val string = """
       abc
       def
@@ -291,23 +295,28 @@ internal class KridTest {
 
     assertThat(krid(string).ascii()).isEqualTo(string)
 
-    assertThat(krid(string).ascii { it.uppercaseChar() }).isEqualTo("""
+    assertThat(krid(string).ascii { it.uppercaseChar() }).isEqualTo(
+      """
       ABC
       DEF
-    """.trimIndent())
+    """.trimIndent()
+    )
   }
 
   @Test
-  internal fun `load from resource`() {
+  fun `load from resource`() {
     val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
 
-    assertThat(krid.ascii()).isEqualTo("""
+    assertThat(krid.ascii()).isEqualTo(
+      """
       fttffttfftttttfffttttttfftttttff
       fttfttfffttffttffffttffffttffttf
       fttttfffftttttfffffttffffttffttf
       fttfttfffttffttffffttffffttffttf
       fttffttffttffttffttttttfftttttff
       ffffffffffffffffffffffffffffffff
-    """.trimIndent())
+    """.trimIndent()
+    )
   }
+
 }

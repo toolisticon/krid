@@ -2,14 +2,14 @@ package io.toolisticon.lib.krid._test
 
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.model.Cell
-import io.toolisticon.lib.krid.model.Direction
-import io.toolisticon.lib.krid.model.Step
+import io.toolisticon.lib.krid.model.step.Direction
+import io.toolisticon.lib.krid.model.step.DirectionStep
 import org.junit.jupiter.params.converter.TypedArgumentConverter
 
-class StepConverter : TypedArgumentConverter<String, Step>(String::class.java, Step::class.java) {
+class StepConverter : TypedArgumentConverter<String, DirectionStep>(String::class.java, DirectionStep::class.java) {
   private val regex = """(\w+)\((\d+)\)""".toRegex()
 
-  override fun convert(source: String): Step {
+  override fun convert(source: String): DirectionStep {
     val (directionName, numberValue) = requireNotNull(regex.find(source)).destructured
 
     return Direction.valueOf(directionName.trim()).invoke(numberValue.trim().toInt())
