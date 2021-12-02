@@ -7,16 +7,16 @@ data class CellValue<E>(
   /**
    * x coordinate
    */
-  val x: Int,
+  override val x: Int,
   /**
    * y coordinate
    */
-  val y: Int,
+  override val y: Int,
   /**
    * value
    */
   val value: E
-) {
+) : Coordinates {
 
   /**
    * Create from cell and value.

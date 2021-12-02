@@ -63,6 +63,16 @@ abstract class AbstractKrid<E> {
   operator fun get(x: Int, y: Int): E = list[indexTransformer.toIndex(requireInColumns(x), requireInRows(y))]
 
   /**
+   * Get [CellValue] for given coordinates.
+   *
+   * @param x x coordinate
+   * @param y y coordinate
+   * @return cellValue at given coordinates
+   * @throws IllegalArgumentException if coordinates are not in bounds of krid
+   */
+  fun getValue(x: Int, y: Int): CellValue<E> = cell(x,y, get(x,y))
+
+  /**
    * @return the rows of this krid.
    */
   fun rows(): Rows<E> = Rows(dimension.rowRange.map(this::row))
@@ -143,6 +153,11 @@ internal val <E>AbstractKrid<E>.isEmptyElement: (E) -> Boolean get() = { it == e
  * Convenience extension for [AbstractKrid.get].
  */
 operator fun <E> AbstractKrid<E>.get(cell: Cell) = get(cell.x, cell.y)
+
+/**
+ * Convenience extension for [AbstractKrid.getValue]
+ */
+fun <E> AbstractKrid<E>.getValue(cell:Cell) = getValue(cell.x, cell.y)
 
 /**
  * Gets multiple [CellValue]s for given list of [Cell]s.

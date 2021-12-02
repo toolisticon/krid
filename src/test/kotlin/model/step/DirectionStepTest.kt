@@ -100,4 +100,30 @@ internal class DirectionStepTest {
     assertThat(step * 3).isEqualTo(UP_LEFT(15))
     assertThat(step * 0).isEqualTo(NONE(0))
   }
+
+  @Test
+  fun `generateSequence down right`() {
+
+    assertThat(DOWN_RIGHT(2).generateSequence(start = cell(1,1), includeStart = false)
+      .take(3)
+      .toList()).containsExactly(
+      cell(3,3),
+      cell(5,5),
+      cell(7,7),
+    )
+
+  }
+
+  @Test
+  fun `generateSequence down right - include start`() {
+
+    assertThat(DOWN_RIGHT(2).generateSequence(start = cell(1,1), includeStart = true)
+      .take(3)
+      .toList()).containsExactly(
+      cell(1,1),
+      cell(3,3),
+      cell(5,5),
+    )
+
+  }
 }

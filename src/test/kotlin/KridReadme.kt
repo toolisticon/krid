@@ -1,6 +1,5 @@
 package io.toolisticon.lib.krid
 
-import io.toolisticon.lib.krid.model.CellValue
 import io.toolisticon.lib.krid.model.step.Direction.DOWN
 import io.toolisticon.lib.krid.model.step.Direction.RIGHT
 
@@ -50,10 +49,10 @@ fun main() {
   //    fttttttf
 
   // add the second krid to the first with an offset of 16 columns, replacing letter `I`
-  val sum = krid + o.toAddKrid(offset = Krids.cell(16, 0))
+  val krod = krid + o.toAddKrid(offset = Krids.cell(16, 0))
 
   // print `KROD` with '*'s instead of '#'s.
-  println(sum.ascii { if (it) '*' else '.' })
+  println(krod.ascii { if (it) '*' else '.' })
   //   .**..**..*****...******..*****..
   //   .**.**...**..**..**..**..**..**.
   //   .****....*****...**..**..**..**.
@@ -67,10 +66,8 @@ fun main() {
   // prints: RIGHT(2) + DOWN(1)
 
   // starting in top left
-  val cellsInKnightsReach = knightStep.walk(Krids.cell(0,0))
-    // until we leave the krid dimension
-    .takeWhile { sum.dimension.isInBounds(it) }
-    .map { CellValue(it, sum.get(it)) }
+  val cellsInKnightsReach = krod.walk(stepFn = knightStep)
     .toList()
   println(cellsInKnightsReach)
+  // prints: [CellValue(x=2, y=1, value=true), CellValue(x=4, y=2, value=true), CellValue(x=6, y=3, value=false), CellValue(x=8, y=4, value=false), CellValue(x=10, y=5, value=false)]
 }

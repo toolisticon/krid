@@ -7,6 +7,8 @@ import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
 import io.toolisticon.lib.krid._test.ResourceHelper
 import io.toolisticon.lib.krid._test.isInstanceOf
 import io.toolisticon.lib.krid.model.Dimension
+import io.toolisticon.lib.krid.model.step.Direction
+import io.toolisticon.lib.krid.model.step.StepFn.Companion.step
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
@@ -319,4 +321,41 @@ internal class KridTest {
     )
   }
 
+  @Test
+  fun `getValue returns CellValue`() {
+    val krid = krid(2,3, false) { x,y -> x == y }
+
+    assertThat(krid.getValue(0,0))
+      .isEqualTo(cell(0,0,true))
+
+    assertThat(krid.getValue(1,2))
+      .isEqualTo(cell(1,2,false))
+  }
+
+  @Test
+  fun `take a step in krid`() {
+    val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
+
+    // resulting in DOWN(5) + RIGHT(4)
+    val step = Direction.DOWN_RIGHT(5) + step(-1,0)
+
+    val value = krid.step(step)
+
+    assertThat(value).isEqualTo(cell(4,5,false))
+  }
+
+  @Test
+  fun `take multiple steps in a krid`() {
+    val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
+    // resulting in DOWN(2) + RIGHT(1)
+    val step = Direction.DOWN_RIGHT(2) + step(-1,0)
+
+    // will only return 2 values, because sequence ends (isInBounds)
+    val values = krid.steps(stepFn = step, number = 4)
+
+    assertThat(values).containsExactlyInAnyOrder(
+      cell(1,2,true),
+      cell(2,4,true),
+    )
+  }
 }

@@ -1,5 +1,6 @@
 package io.toolisticon.lib.krid.model.step
 
+import io.toolisticon.lib.krid.Krids
 import io.toolisticon.lib.krid.model.Cell
 import io.toolisticon.lib.krid.model.Coordinates
 
@@ -20,6 +21,12 @@ sealed interface StepFn : (Cell) -> Cell {
    */
   operator fun plus(other: StepFn): StepFn
 
+  /**
+   * Multiplies the effect of a stepFn.
+   *
+   * @param number the value to use for multiplication
+   * @return new stepFn that will use the current * number effective setup, implementations vary
+   */
   operator fun times(number: Int) : StepFn
 
   /**
@@ -30,3 +37,5 @@ sealed interface StepFn : (Cell) -> Cell {
    */
   override fun invoke(start: Cell): Cell
 }
+
+fun StepFn.generateSequence(start:Cell = Krids.ORIGIN, includeStart:Boolean = false) : Sequence<Cell> = generateSequence(if (includeStart) start else this(start)) { this.invoke(it) }

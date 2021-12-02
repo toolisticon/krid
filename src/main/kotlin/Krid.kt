@@ -1,8 +1,11 @@
 package io.toolisticon.lib.krid
 
+import io.toolisticon.lib.krid.Krids.ORIGIN
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid.model.*
+import io.toolisticon.lib.krid.model.step.StepFn
+import io.toolisticon.lib.krid.model.step.generateSequence
 
 /**
  * A [Krid] of type `<E>` with given [Dimension].
@@ -82,6 +85,14 @@ data class Krid<E>(
 }
 
 operator fun <E> Krid<E>.plus(cellValue: CellValue<E>): Krid<E> = plus(listOf(cellValue))
+
+fun <E> Krid<E>.step(stepFn: StepFn, start: Cell = ORIGIN): CellValue<E> = this.getValue(stepFn.invoke(start))
+
+fun <E> Krid<E>.walk(stepFn: StepFn, start: Cell = ORIGIN, includeStart: Boolean = false): Sequence<CellValue<E>> = stepFn.generateSequence(start, includeStart)
+  .takeWhile { this.dimension.isInBounds(it) }
+  .map { this.getValue(it) }
+
+fun <E> Krid<E>.steps(stepFn: StepFn, start: Cell = ORIGIN, number: Int): List<CellValue<E>> = walk(stepFn= stepFn, start= start, includeStart = false).take(number).toList()
 
 fun <E> Krid<E>.plus(offset: Cell, krid: Krid<E>, operation: (E, E) -> E = { _, new -> new }) = plus(krid.toAddKrid(offset, operation))
 
