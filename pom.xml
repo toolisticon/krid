@@ -6,6 +6,7 @@
   <artifactId>krid</artifactId>
   <version>0.0.2-SNAPSHOT</version>
   <name>${project.artifactId}</name>
+  <description>kotlin library to support two dimensional array grids</description>
   <url>https://github.com/toolisticon/${project.artifactId}/</url>
 
   <properties>
