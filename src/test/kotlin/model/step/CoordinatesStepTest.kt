@@ -15,7 +15,7 @@ internal class CoordinatesStepTest {
 
   @Test
   fun `coordinatesStep can be constructed and invoked`() {
-    var step = CoordinatesStep(1,1)
+    var step = CoordinatesStep(1, 1)
     assertThat(step.x).isEqualTo(1)
     assertThat(step.y).isEqualTo(1)
 
@@ -51,7 +51,14 @@ internal class CoordinatesStepTest {
 
   @Test
   fun `toString contains coordinates without cell`() {
-    assertThat(step(4,6).toString())
+    assertThat(step(4, 6).toString())
       .isEqualTo("CoordinatesStep(x=4, y=6)")
+  }
+
+  @Test
+   fun `multiply step`() {
+    assertThat(CoordinatesStep() * 3).isEqualTo(CoordinatesStep())
+    assertThat(CoordinatesStep(1, 2) * 3).isEqualTo(CoordinatesStep(3, 6))
+    assertThat(CoordinatesStep(1, 2) * -4).isEqualTo(CoordinatesStep(-4, -8))
   }
 }

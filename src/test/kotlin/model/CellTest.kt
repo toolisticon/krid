@@ -1,5 +1,6 @@
 package io.toolisticon.lib.krid.model
 
+import io.toolisticon.lib.krid.Krids.ORIGIN
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid._test.CellConverter
 import io.toolisticon.lib.krid.model.CellTest.Comparison.*
@@ -118,5 +119,11 @@ internal class CellTest {
     val cell = cell(1, 1)
 
     assertThat(cell(direction)).isEqualTo(expected)
+  }
+
+  @Test
+  fun `multiply cell coordinates`() {
+    assertThat(cell(-1, 5) * -3).isEqualTo(cell(3,-15))
+    assertThat(cell(-1, 5) * 0).isEqualTo(ORIGIN)
   }
 }

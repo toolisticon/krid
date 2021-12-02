@@ -43,7 +43,11 @@ enum class Direction(val fn: (Cell, Int) -> Cell) : StepFn {
   override operator fun plus(other: StepFn): CompositeStep = when (other) {
     is Direction -> singleStep + other.singleStep
     is DirectionStep, is CompositeStep -> singleStep + other
-    else -> TODO()
+    is CoordinatesStep -> this + other.directionSteps
+  }
+
+  override fun times(number: Int): StepFn {
+    TODO("Not yet implemented")
   }
 
   /**

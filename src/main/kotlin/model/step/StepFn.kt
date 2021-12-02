@@ -20,6 +20,8 @@ sealed interface StepFn : (Cell) -> Cell {
    */
   operator fun plus(other: StepFn): StepFn
 
+  operator fun times(number: Int) : StepFn
+
   /**
    * Applies step operation to given cell.
    *

@@ -18,7 +18,7 @@ data class CompositeStep(private val list: List<StepFn>) : StepFn, List<StepFn> 
 
       val list = mutableListOf<DirectionStep>()
       if (optimize) {
-        TODO()
+        TODO("this will return the minimal way using diagonals")
       } else {
         if (coordinates.x != 0)
           list.add(DirectionStep.horizontal(coordinates.x))
@@ -31,13 +31,14 @@ data class CompositeStep(private val list: List<StepFn>) : StepFn, List<StepFn> 
 
   constructor(step: StepFn) : this(listOf(step))
 
-
   override operator fun plus(other: StepFn): CompositeStep = when (other) {
     is Direction -> plus(other.singleStep)
     is DirectionStep -> copy(list = list + other)
     is CompositeStep -> copy(list = list + other.list)
-    else -> TODO()
+    is CoordinatesStep -> this + other.directionSteps
   }
+
+  override fun times(number: Int): StepFn = copy(list = list.map { it.times(number) })
 
   /**
    * Returns a sequence of cells reached by the single steps.

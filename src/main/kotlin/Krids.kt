@@ -12,6 +12,7 @@ import io.toolisticon.lib.krid.model.Dimension
 object Krids {
 
   const val DEFAULT_EMPTY_CHAR = '.'
+  val ORIGIN = cell(0,0)
 
   /**
    * Creates a new [Krid] with [Dimension](1,1) containing just the emptyElement value.

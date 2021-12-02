@@ -4,7 +4,7 @@ import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid._test.CellConverter
 import io.toolisticon.lib.krid._test.StepConverter
 import io.toolisticon.lib.krid.model.Cell
-import io.toolisticon.lib.krid.model.step.Direction.UP_LEFT
+import io.toolisticon.lib.krid.model.step.Direction.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -85,4 +85,19 @@ internal class DirectionStepTest {
   }
 
 
+  @Test
+  fun `parse from toString`() {
+    assertThat(DirectionStep.parse("DOWN(10)")).isEqualTo(DirectionStep(DOWN, 10))
+
+    assertThat(DirectionStep.parse(Direction.UP(2).toString())).isEqualTo(Direction.UP(2))
+  }
+
+  @Test
+  fun `multiply step`() {
+    val step = UP_LEFT(5)
+
+    assertThat(step * -2).isEqualTo(DOWN_RIGHT(10))
+    assertThat(step * 3).isEqualTo(UP_LEFT(15))
+    assertThat(step * 0).isEqualTo(NONE(0))
+  }
 }

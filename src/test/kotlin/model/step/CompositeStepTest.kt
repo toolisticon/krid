@@ -1,10 +1,9 @@
 package io.toolisticon.lib.krid.model.step
 
-import io.toolisticon.lib.krid.Krids
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid._test.CellConverter
 import io.toolisticon.lib.krid.model.Cell
-import org.assertj.core.api.Assertions
+import io.toolisticon.lib.krid.model.step.Direction.DOWN
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -19,7 +18,7 @@ internal class CompositeStepTest {
     var steps = Direction.UP + Direction.LEFT
     assertThat(steps).hasToString("UP(1) + LEFT(1)")
 
-    steps += Direction.DOWN(2)
+    steps += DOWN(2)
     assertThat(steps).hasToString("UP(1) + LEFT(1) + DOWN(2)")
   }
 
@@ -52,10 +51,41 @@ internal class CompositeStepTest {
   )
   fun `orthogonal steps from coordinates`(
     @ConvertWith(CellConverter::class) coordinates: Cell,
-    optimize:Boolean,
+    optimize: Boolean,
     expected: String
   ) {
     assertThat(CompositeStep(coordinates, optimize).toString())
       .isEqualTo(expected)
+  }
+
+  @Test
+  fun `multiply all steps`() {
+    val composite = DOWN(2) + CoordinatesStep(2, 3)
+
+    assertThat(composite * -2).isEqualTo(
+      CompositeStep(
+        listOf(
+          DirectionStep.parse("UP(4)"),
+          DirectionStep.parse("LEFT(4)"),
+          DirectionStep.parse("UP(6)"),
+        )
+      )
+    )
+  }
+
+  @Test
+  fun `plus coordinates`() {
+    val composite = DOWN(3) + Direction.UP + CoordinatesStep(3,4)
+
+    assertThat(composite).isEqualTo(
+      CompositeStep(
+        listOf(
+          DirectionStep.parse("DOWN(3)"),
+          DirectionStep.parse("UP(1)"),
+          DirectionStep.parse("RIGHT(3)"),
+          DirectionStep.parse("DOWN(4)"),
+        )
+      )
+    )
   }
 }
