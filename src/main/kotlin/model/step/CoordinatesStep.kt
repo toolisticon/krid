@@ -8,17 +8,17 @@ import io.toolisticon.lib.krid.model.Coordinates
  * The "mother of all stepFn's" ... stores the total (x,y) offset
  * and applies it to a cell.
  */
-data class CoordinatesStep(private val step: Cell = Krids.ORIGIN) : StepFn, Coordinates by step {
+data class CoordinatesStep(private val coordinates: Cell = Krids.ORIGIN) : StepFn, Coordinates by coordinates {
   constructor(x: Int, y: Int) : this(Krids.cell(x, y))
 
-  override fun plus(other: StepFn): CoordinatesStep = copy(step = other(step))
+  override fun plus(other: StepFn): CoordinatesStep = copy(coordinates = other(coordinates))
 
-  override fun times(number: Int): StepFn = copy(step = step * number)
+  override fun times(number: Int): StepFn = copy(coordinates = coordinates * number)
 
-  override fun invoke(start: Cell): Cell = start + step
+  override fun invoke(start: Cell): Cell = start + coordinates
 
   val directionSteps: CompositeStep by lazy {
-    CompositeStep(step)
+    CompositeStep(coordinates)
   }
 
   override fun toString(): String = "CoordinatesStep(x=$x, y=$y)"
