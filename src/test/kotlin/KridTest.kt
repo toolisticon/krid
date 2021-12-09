@@ -24,6 +24,14 @@ internal class KridTest {
     """.trimIndent()
   )
 
+  val krid19: Krid<Int> = krid(
+    """
+      123
+      456
+      789
+    """.trimIndent(), 0
+  ) { it.toString().toInt() }
+
   @Test
   fun `init fails - dimension#size != list#size`() {
     assertThatThrownBy { Krid(Dimension(4, 5), true, List<Boolean>(40) { false }) }
@@ -247,15 +255,7 @@ internal class KridTest {
 
   @Test
   fun `adjacent cells `() {
-    val krid: Krid<Int> = krid(
-      """
-      123
-      456
-      789
-    """.trimIndent(), 0
-    ) { it.toString().toInt() }
-
-    assertThat(krid.adjacentCells(1, 1)).containsExactly(
+    assertThat(krid19.adjacentCells(1, 1)).containsExactly(
       cell(1, 0), // up
       cell(2, 0), // up-right
       cell(2, 1), // right
@@ -266,7 +266,7 @@ internal class KridTest {
       cell(0, 0),
     )
 
-    assertThat(krid.adjacentCellValues(1, 1)).containsExactly(
+    assertThat(krid19.adjacentCellValues(1, 1)).containsExactly(
       cell(1, 0, 2), // up
       cell(2, 0, 3), // up-right
       cell(2, 1, 6), // right
@@ -277,27 +277,26 @@ internal class KridTest {
       cell(0, 0, 1),
     )
 
-
     assertThat(krid(false).adjacentCells(0, 0)).isEmpty()
   }
 
 
   @Test
   fun `orthogonalAdjacent cells`() {
-    val krid: Krid<Char> = krid(
-      """
-      123
-      456
-      789
-    """.trimIndent()
-    )
-
-    assertThat(krid.orthogonalAdjacentCells(1, 1)).containsExactly(
+    assertThat(krid19.orthogonalAdjacentCells(1, 1)).containsExactly(
       cell(1, 0), // up
       cell(2, 1), // right
       cell(1, 2), // down
       cell(0, 1),
     )
+
+    assertThat(krid19.orthogonalAdjacentCellValues(1, 1)).containsExactly(
+      cell(1, 0, 2), // up
+      cell(2, 1, 6), // right
+      cell(1, 2, 8), // down
+      cell(0, 1, 4),
+    )
+    
     assertThat(Krids.krid(false).orthogonalAdjacentCells(0, 0)).isEmpty()
   }
 
@@ -411,6 +410,7 @@ internal class KridTest {
       cell(1, 1),
       cell(0, 1),
     )
+
 
     val c11 = cell(1, 1)
     assertThat(krid.adjacentCells(1, 1)).containsExactlyInAnyOrder(

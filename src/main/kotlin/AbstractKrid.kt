@@ -118,7 +118,7 @@ abstract class AbstractKrid<E> {
    * @return list of cell valuess up, left, down, right (in bounds)
    */
   fun orthogonalAdjacentCellValues(cell: Cell): List<CellValue<E>> = orthogonalAdjacentCells(cell)
-    .map { this.getValue(cell) }
+    .map { this.getValue(it) }
 
   /**
    * Returns direct neighbors in all 8 directions of given cell.
