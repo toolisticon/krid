@@ -89,34 +89,4 @@ internal class KridsTest {
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("all rows must have same size: [[true, true], [true]]")
   }
-
-
-  @Test
-  fun `adjacent cells`() {
-    val krid = booleanKrid(
-      """
-      tf.
-      .tf
-      f.t
-    """.trimIndent()
-    )
-
-    assertThat(krid.adjacentCells(cell(0, 0))).containsExactlyInAnyOrder(
-      cell(1, 0),
-      cell(1, 1),
-      cell(0, 1),
-    )
-
-    val c11 = cell(1, 1)
-    assertThat(krid.adjacentCells(1, 1)).containsExactlyInAnyOrder(
-      c11(Direction.UP),
-      c11(Direction.UP_RIGHT),
-      c11(Direction.RIGHT),
-      c11(Direction.DOWN_RIGHT),
-      c11(Direction.DOWN),
-      c11(Direction.DOWN_LEFT),
-      c11(Direction.LEFT),
-      c11(Direction.UP_LEFT),
-    )
-  }
 }

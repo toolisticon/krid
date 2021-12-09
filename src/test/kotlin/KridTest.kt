@@ -246,14 +246,14 @@ internal class KridTest {
   }
 
   @Test
-  fun `adjacent cells`() {
-    val krid: Krid<Char> = krid(
+  fun `adjacent cells `() {
+    val krid: Krid<Int> = krid(
       """
       123
       456
       789
-    """.trimIndent()
-    )
+    """.trimIndent(), 0
+    ) { it.toString().toInt() }
 
     assertThat(krid.adjacentCells(1, 1)).containsExactly(
       cell(1, 0), // up
@@ -265,7 +265,20 @@ internal class KridTest {
       cell(0, 1),
       cell(0, 0),
     )
-    assertThat(Krids.krid(false).adjacentCells(0, 0)).isEmpty()
+
+    assertThat(krid.adjacentCellValues(1, 1)).containsExactly(
+      cell(1, 0, 2), // up
+      cell(2, 0, 3), // up-right
+      cell(2, 1, 6), // right
+      cell(2, 2, 9), // down-right
+      cell(1, 2, 8), // down
+      cell(0, 2, 7),
+      cell(0, 1, 4),
+      cell(0, 0, 1),
+    )
+
+
+    assertThat(krid(false).adjacentCells(0, 0)).isEmpty()
   }
 
 
@@ -323,13 +336,13 @@ internal class KridTest {
 
   @Test
   fun `getValue returns CellValue`() {
-    val krid = krid(2,3, false) { x,y -> x == y }
+    val krid = krid(2, 3, false) { x, y -> x == y }
 
-    assertThat(krid.getValue(0,0))
-      .isEqualTo(cell(0,0,true))
+    assertThat(krid.getValue(0, 0))
+      .isEqualTo(cell(0, 0, true))
 
-    assertThat(krid.getValue(1,2))
-      .isEqualTo(cell(1,2,false))
+    assertThat(krid.getValue(1, 2))
+      .isEqualTo(cell(1, 2, false))
   }
 
   @Test
@@ -337,25 +350,79 @@ internal class KridTest {
     val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
 
     // resulting in DOWN(5) + RIGHT(4)
-    val step = Direction.DOWN_RIGHT(5) + step(-1,0)
+    val step = Direction.DOWN_RIGHT(5) + step(-1, 0)
 
     val value = krid.step(step)
 
-    assertThat(value).isEqualTo(cell(4,5,false))
+    assertThat(value).isEqualTo(cell(4, 5, false))
   }
 
   @Test
   fun `take multiple steps in a krid`() {
     val krid: Krid<Boolean> = krid(ResourceHelper.readFile("krid-ascii.txt"), false) { it == '#' }
     // resulting in DOWN(2) + RIGHT(1)
-    val step = Direction.DOWN_RIGHT(2) + step(-1,0)
+    val step = Direction.DOWN_RIGHT(2) + step(-1, 0)
 
     // will only return 2 values, because sequence ends (isInBounds)
     val values = krid.steps(stepFn = step, number = 4)
 
     assertThat(values).containsExactlyInAnyOrder(
-      cell(1,2,true),
-      cell(2,4,true),
+      cell(1, 2, true),
+      cell(2, 4, true),
     )
   }
+
+  @Test
+  fun `cells and cell values`() {
+    val krid = booleanKrid(
+      """
+      t.
+      .f
+    """.trimIndent()
+    )
+
+    assertThat(krid.cells().toList()).containsExactly(
+      cell(0, 0),
+      cell(1, 0),
+      cell(0, 1),
+      cell(1, 1),
+    )
+
+    assertThat(krid.cellValues().toList()).containsExactly(
+      cell(0, 0, true),
+      cell(1, 0, null),
+      cell(0, 1, null),
+      cell(1, 1, false),
+    )
+  }
+
+  @Test
+  fun `adjacent cells`() {
+    val krid = booleanKrid(
+      """
+      tf.
+      .tf
+      f.t
+    """.trimIndent()
+    )
+
+    assertThat(krid.adjacentCells(cell(0, 0))).containsExactlyInAnyOrder(
+      cell(1, 0),
+      cell(1, 1),
+      cell(0, 1),
+    )
+
+    val c11 = cell(1, 1)
+    assertThat(krid.adjacentCells(1, 1)).containsExactlyInAnyOrder(
+      c11(Direction.UP),
+      c11(Direction.UP_RIGHT),
+      c11(Direction.RIGHT),
+      c11(Direction.DOWN_RIGHT),
+      c11(Direction.DOWN),
+      c11(Direction.DOWN_LEFT),
+      c11(Direction.LEFT),
+      c11(Direction.UP_LEFT),
+    )
+  }
+
 }

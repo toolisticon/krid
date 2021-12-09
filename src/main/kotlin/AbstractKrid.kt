@@ -70,7 +70,7 @@ abstract class AbstractKrid<E> {
    * @return cellValue at given coordinates
    * @throws IllegalArgumentException if coordinates are not in bounds of krid
    */
-  fun getValue(x: Int, y: Int): CellValue<E> = cell(x,y, get(x,y))
+  fun getValue(x: Int, y: Int): CellValue<E> = cell(x, y, get(x, y))
 
   /**
    * @return the rows of this krid.
@@ -112,6 +112,15 @@ abstract class AbstractKrid<E> {
   fun orthogonalAdjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.orthogonalAdjacent)
 
   /**
+   * Returns direct [CellValue] neighbors up, left, down and right of given cell.
+   *
+   * @param cell the base cell from which to check neighbors
+   * @return list of cell valuess up, left, down, right (in bounds)
+   */
+  fun orthogonalAdjacentCellValues(cell: Cell): List<CellValue<E>> = orthogonalAdjacentCells(cell)
+    .map { this.getValue(cell) }
+
+  /**
    * Returns direct neighbors in all 8 directions of given cell.
    *
    * @param cell the base cell from which to check neighbors
@@ -119,6 +128,25 @@ abstract class AbstractKrid<E> {
    */
   fun adjacentCells(cell: Cell): List<Cell> = dimension.filterInBounds(cell.adjacent)
 
+  /**
+   * Returns direct [CellValue] neighbors in all 8 directions of given cell.
+   *
+   * @param cell the base cell from which to check neighbors
+   * @return list of cell values in all 8 directions (in bounds)
+   */
+  fun adjacentCellValues(cell: Cell) = adjacentCells(cell)
+    .map { this.getValue(it) }
+
+  /**
+   * @return sequence of all cells in krid
+   */
+  fun cells(): Sequence<Cell> = cellValues().map { it.cell }
+
+  /**
+   * @see #iterator()
+   * @return sequence of all cellValues in krid
+   */
+  fun cellValues(): Sequence<CellValue<E>> = iterator().asSequence()
 }
 
 
@@ -138,11 +166,25 @@ fun <E> AbstractKrid<E>.sequence(): Sequence<CellValue<E>> = iterator().asSequen
 fun <E> AbstractKrid<E>.orthogonalAdjacentCells(x: Int, y: Int) = orthogonalAdjacentCells(cell(x, y))
 
 /**
+ * Convenient extension for [AbstractKrid.orthogonalAdjacentCellValues].
+ *
+ * @see AbstractKrid.orthogonalAdjacentCellValues
+ */
+fun <E> AbstractKrid<E>.orthogonalAdjacentCellValues(x: Int, y: Int) = orthogonalAdjacentCellValues(cell(x, y))
+
+/**
  * Convenient extension for [AbstractKrid.adjacentCells].
  *
  * @see AbstractKrid.adjacentCells
  */
 fun <E> AbstractKrid<E>.adjacentCells(x: Int, y: Int) = adjacentCells(cell(x, y))
+
+/**
+ * Convenient extension for [AbstractKrid.adjacentCellValues].
+ *
+ * @see AbstractKrid.adjacentCellValues
+ */
+fun <E> AbstractKrid<E>.adjacentCellValues(x: Int, y: Int) = adjacentCellValues(cell(x, y))
 
 /**
  * `true` if a value is equal to the defined [AbstractKrid.emptyElement].
@@ -157,7 +199,7 @@ operator fun <E> AbstractKrid<E>.get(cell: Cell) = get(cell.x, cell.y)
 /**
  * Convenience extension for [AbstractKrid.getValue]
  */
-fun <E> AbstractKrid<E>.getValue(cell:Cell) = getValue(cell.x, cell.y)
+fun <E> AbstractKrid<E>.getValue(cell: Cell) = getValue(cell.x, cell.y)
 
 /**
  * Gets multiple [CellValue]s for given list of [Cell]s.
