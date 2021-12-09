@@ -2,17 +2,23 @@ package io.toolisticon.lib.krid.model.step
 
 import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.model.Cell
+import io.toolisticon.lib.krid.model.Coordinates
+import io.toolisticon.lib.krid.model.toPair
+import kotlin.math.sign
 
-enum class Direction(val fn: (Cell, Int) -> Cell) : StepFn {
-  UP(fn = { start, num -> start + cell(0, -num) }),
-  UP_RIGHT(fn = { start, num -> start + cell(num, -num) }),
-  RIGHT(fn = { start, num -> start + cell(num, 0) }),
-  DOWN_RIGHT(fn = { start, num -> start + cell(num, num) }),
-  DOWN(fn = { start, num -> start + cell(0, num) }),
-  DOWN_LEFT(fn = { start, num -> start + cell(-num, num) }),
-  LEFT(fn = { start, num -> start + cell(-num, 0) }),
-  UP_LEFT(fn = { start, num -> start + cell(-num, -num) }),
-  NONE(fn = { start, _ -> start }),
+enum class Direction(
+  val coordinates: Coordinates
+) : StepFn {
+
+  UP(coordinates = cell(0, -1)),
+  UP_RIGHT(coordinates = cell(1, -1)),
+  RIGHT(coordinates = cell(1, 0)),
+  DOWN_RIGHT(coordinates = cell(1, 1)),
+  DOWN(coordinates = cell(0, 1)),
+  DOWN_LEFT(coordinates = cell(-1, 1)),
+  LEFT(coordinates = cell(-1, 0)),
+  UP_LEFT(coordinates = cell(-1, -1)),
+  NONE(coordinates = cell(0, 0)),
   ;
 
   companion object {
@@ -29,6 +35,15 @@ enum class Direction(val fn: (Cell, Int) -> Cell) : StepFn {
       UP_RIGHT to DOWN_LEFT,
       DOWN_LEFT to UP_RIGHT,
     )
+
+    private val BY_COORDINATES: Map<Pair<Int, Int>, Direction> = buildMap {
+      values().forEach {
+        put(it.coordinates.toPair(), it)
+      }
+    }
+
+    fun valueOf(coordinates: Coordinates): Direction = BY_COORDINATES[cell(coordinates.x.sign, coordinates.y.sign).toPair()]!!
+
   }
 
   val singleStep by lazy {
@@ -46,9 +61,7 @@ enum class Direction(val fn: (Cell, Int) -> Cell) : StepFn {
     is CoordinatesStep -> this + other.directionSteps
   }
 
-  override fun times(number: Int): StepFn {
-    TODO("Not yet implemented")
-  }
+  override fun times(number: Int): DirectionStep = invoke(number)
 
   /**
    * Sequence of cells in given direction.

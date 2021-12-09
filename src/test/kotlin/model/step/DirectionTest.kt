@@ -1,10 +1,13 @@
 package io.toolisticon.lib.krid.model.step
 
 import io.toolisticon.lib.krid.Krids.cell
+import io.toolisticon.lib.krid._test.CellConverter
+import io.toolisticon.lib.krid.model.Cell
 import io.toolisticon.lib.krid.model.step.Direction.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.converter.ConvertWith
 import org.junit.jupiter.params.provider.CsvSource
 
 class DirectionTest {
@@ -74,4 +77,26 @@ class DirectionTest {
   fun `opposite directions`(direction: Direction, expected: Direction) {
     assertThat(direction.opposite).isEqualTo(expected)
   }
+
+  @ParameterizedTest
+  @CsvSource(
+    value = [
+      "0 to 0, NONE",
+      "0 to 5, DOWN",
+      "0 to -4, UP",
+      "3 to 0, RIGHT",
+      "-2 to 0, LEFT",
+      "3 to 3, DOWN_RIGHT",
+      "-4 to -4, UP_LEFT",
+      "-5 to 5, DOWN_LEFT",
+      "7 to -7, UP_RIGHT",
+    ]
+  )
+  fun `valueOf from coordinates`(
+    @ConvertWith(CellConverter::class) coordinates: Cell,
+    expected: Direction
+  ) {
+    assertThat(Direction.valueOf(coordinates)).isEqualTo(expected)
+  }
+
 }

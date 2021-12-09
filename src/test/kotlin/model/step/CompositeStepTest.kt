@@ -46,7 +46,14 @@ internal class CompositeStepTest {
   @CsvSource(
     value = [
       "1 to 0, false, RIGHT(1)",
+      "1 to 0, true, RIGHT(1)",
       "-5 to 0, false, LEFT(5)",
+      "-5 to 0, true, LEFT(5)",
+      "0 to 0, false, NONE(0)",
+      "-5 to -4, false, LEFT(5) + UP(4)",
+      "-5 to -4, true, LEFT(1) + UP_LEFT(4)",
+      "2 to 2, true, DOWN_RIGHT(2)",
+      "2 to 3, true, DOWN(1) + DOWN_RIGHT(2)",
     ]
   )
   fun `orthogonal steps from coordinates`(
@@ -88,4 +95,5 @@ internal class CompositeStepTest {
       )
     )
   }
+
 }

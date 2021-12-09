@@ -2,6 +2,7 @@ package io.toolisticon.lib.krid.model.step
 
 import io.toolisticon.lib.krid.model.Cell
 import io.toolisticon.lib.krid.model.Coordinates
+import kotlin.math.min
 
 
 /**
@@ -16,16 +17,27 @@ data class CompositeStep(private val list: List<StepFn>) : StepFn, List<StepFn> 
         return CompositeStep(Direction.NONE(0))
       }
 
-      val list = mutableListOf<DirectionStep>()
-      if (optimize) {
-        TODO("this will return the minimal way using diagonals")
-      } else {
+      val list: MutableList<DirectionStep> = buildList {
         if (coordinates.x != 0)
-          list.add(DirectionStep.horizontal(coordinates.x))
+          add(DirectionStep.horizontal(coordinates.x))
         if (coordinates.y != 0)
-          list.add(DirectionStep.vertical(coordinates.y))
+          add(DirectionStep.vertical(coordinates.y))
+      }.toMutableList()
+
+      if (optimize && list.size > 1) {
+        val h = list[0]
+        val v = list[1]
+        list.clear()
+
+        if (h.number > v.number) {
+          list.add(h.copy(number = h.number - v.number))
+        } else if (h.number < v.number) {
+          list.add(v.copy(number = v.number - h.number))
+        }
+
+        list.add(Direction.valueOf("${v.direction.name}_${h.direction.name}") * min(v.number, h.number))
       }
-      return CompositeStep(list)
+      return CompositeStep(list.toList())
     }
   }
 

@@ -10,6 +10,8 @@ interface Coordinates {
   val y: Int
 }
 
+fun Coordinates.toPair() = x to y
+
 /**
  * A Cell represents a (x,y)-coordinate inside a Krid.
  */

@@ -10,6 +10,7 @@ import io.toolisticon.lib.krid.model.Coordinates
  */
 data class CoordinatesStep(private val coordinates: Cell = Krids.ORIGIN) : StepFn, Coordinates by coordinates {
   constructor(x: Int, y: Int) : this(Krids.cell(x, y))
+  constructor(coordinates: Coordinates) : this(Krids.cell(coordinates.x, coordinates.y))
 
   override fun plus(other: StepFn): CoordinatesStep = copy(coordinates = other(coordinates))
 

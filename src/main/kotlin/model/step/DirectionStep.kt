@@ -1,6 +1,7 @@
 package io.toolisticon.lib.krid.model.step
 
 import io.toolisticon.lib.krid.model.Cell
+import kotlin.math.absoluteValue
 
 /**
  * Take a number of steps in the given direction.
@@ -10,14 +11,14 @@ data class DirectionStep(val direction: Direction, val number: Int) : StepFn {
     private val regex = """(\w+)\((\d+)\)""".toRegex()
 
     fun horizontal(number: Int): DirectionStep = when {
-      number < 0 -> Direction.LEFT(-number)
-      number > 0 -> Direction.RIGHT(number)
+      number < 0 -> Direction.LEFT(number.absoluteValue)
+      number > 0 -> Direction.RIGHT(number.absoluteValue)
       else -> Direction.NONE(0)
     }
 
     fun vertical(number: Int): DirectionStep = when {
-      number < 0 -> Direction.UP(-number)
-      number > 0 -> Direction.DOWN(number)
+      number < 0 -> Direction.UP(number.absoluteValue)
+      number > 0 -> Direction.DOWN(number.absoluteValue)
       else -> Direction.NONE(0)
     }
 
@@ -28,7 +29,13 @@ data class DirectionStep(val direction: Direction, val number: Int) : StepFn {
 
   }
 
-  override fun invoke(start: Cell): Cell = direction.fn(start, number)
+  private val fn : (Cell,Int) -> Cell by lazy {
+    { start, num ->
+      (CoordinatesStep(direction.coordinates) * num).invoke(start)
+    }
+  }
+
+  override fun invoke(start: Cell): Cell = fn(start, number)
 
   override operator fun plus(other: StepFn): CompositeStep = when (other) {
     is Direction -> this + other.singleStep
