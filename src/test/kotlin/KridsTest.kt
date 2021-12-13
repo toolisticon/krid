@@ -1,10 +1,7 @@
 package io.toolisticon.lib.krid
 
-import io.toolisticon.lib.krid.Krids.cell
 import io.toolisticon.lib.krid.Krids.krid
-import io.toolisticon.lib.krid._test.BooleanKridHelper.booleanKrid
 import io.toolisticon.lib.krid.model.Column
-import io.toolisticon.lib.krid.model.step.Direction
 import io.toolisticon.lib.krid.model.Row
 import io.toolisticon.lib.krid.model.pair
 import org.assertj.core.api.Assertions.assertThat

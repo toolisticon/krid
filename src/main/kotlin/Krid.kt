@@ -99,5 +99,5 @@ fun <E> Krid<E>.plus(offset: Cell, krid: Krid<E>, operation: (E, E) -> E = { _, 
 /**
  * Create [AddKrid] of given krid.
  */
-fun <E> Krid<E>.toAddKrid(offset: Cell = cell(0, 0), operation: (E, E) -> E = { _, new -> new }) =
+fun <E> Krid<E>.toAddKrid(offset: Cell = ORIGIN, operation: (E, E) -> E = { _, new -> new }) =
   AddKrid(offset = offset, krid = this, operation = operation)
