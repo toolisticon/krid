@@ -1,6 +1,7 @@
 package io.toolisticon.lib.krid
 
 import io.toolisticon.lib.krid.Krids.cell
+import io.toolisticon.lib.krid.Krids.krid
 import io.toolisticon.lib.krid.fn.IndexTransformer
 import io.toolisticon.lib.krid.model.*
 
@@ -223,4 +224,20 @@ operator fun <E> AbstractKrid<E>.get(cells: List<Cell>): List<CellValue<E>> {
  */
 fun <E> AbstractKrid<E>.ascii(toChar: (E) -> Char? = { it?.toString()?.first() ?: '.' }): String = this.rows().joinToString(separator = "\n") {
   it.map { e -> toChar(e) ?: '.' }.joinToString(separator = "")
+}
+
+fun <E> AbstractKrid<E>.flipHorizontal() = krid(
+  rows = this.rows().map { it.reversed() },
+  emptyElement = this.emptyElement
+)
+
+fun <E> AbstractKrid<E>.flipVertical(): Krid<E> {
+  val reversedCols: Columns<E> = Columns(this.columns().mapIndexed() {
+    i, list -> Column(i, list.reversed())
+  })
+
+  return krid(
+    rows = reversedCols.toRows(),
+    emptyElement = this.emptyElement
+  )
 }

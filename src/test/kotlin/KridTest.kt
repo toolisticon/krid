@@ -296,7 +296,7 @@ internal class KridTest {
       cell(1, 2, 8), // down
       cell(0, 1, 4),
     )
-    
+
     assertThat(Krids.krid(false).orthogonalAdjacentCells(0, 0)).isEmpty()
   }
 
@@ -425,4 +425,41 @@ internal class KridTest {
     )
   }
 
+  @Test
+  fun `flip horizontal`() {
+    val krid = booleanKrid(
+      """
+      tf.
+      .tf
+      f.t
+    """.trimIndent()
+    )
+
+    val flipped = krid.flipHorizontal()
+
+    assertThat(flipped.ascii()).isEqualTo("""
+      .ft
+      ft.
+      t.f
+    """.trimIndent())
+  }
+
+  @Test
+  fun `flip vertical`() {
+    val krid = booleanKrid(
+      """
+      tf.
+      .tf
+      f.t
+    """.trimIndent()
+    )
+
+    val flipped = krid.flipVertical()
+
+    assertThat(flipped.ascii()).isEqualTo("""
+      f.t
+      .tf
+      tf.
+    """.trimIndent())
+  }
 }
