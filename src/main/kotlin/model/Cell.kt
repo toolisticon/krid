@@ -80,8 +80,9 @@ data class Cell(override val x: Int, override val y: Int) : Comparable<Cell>, Co
 
   operator fun times(number: Int): Cell = copy(x = x * number, y = y * number)
 
-  private fun adjacent(vararg directions: Direction): List<Cell> = directions.map { this(it.singleStep) }
 }
+
+fun Cell.adjacent(vararg directions: Direction): List<Cell> = directions.map { this(it.singleStep) }
 
 /**
  * Transforms a pair of [Int]s to a type safe [Cell].
