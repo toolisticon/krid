@@ -12,7 +12,7 @@ import io.toolisticon.lib.krid.model.Dimension
 object Krids {
 
   const val DEFAULT_EMPTY_CHAR = '.'
-  val ORIGIN = cell(0,0)
+  val ORIGIN = cell(0, 0)
 
   /**
    * Creates a new [Krid] with [Dimension](1,1) containing just the emptyElement value.
@@ -57,6 +57,12 @@ object Krids {
     emptyElement = emptyElement
   )
 
+  /**
+   * Parses the given string and interprets chars as digits to create
+   * a [Krid<Int>] with emptyElement = 0.
+   */
+  fun kridInt(string: String): Krid<Int> = krid(string = string, emptyElement = 0) { it.digitToInt() }
+
   fun <E> krid(rows: List<List<E>>, emptyElement: E): Krid<E> {
     require(rows.isNotEmpty()) { "rows must not be empty: $rows" }
     require(rows.none { it.isEmpty() }) { "no rows must be empty: $rows" }
@@ -69,7 +75,13 @@ object Krids {
     )
   }
 
+  /**
+   * @param x x coordinate
+   * @param y y coordinate
+   * @return [Cell](x,y)
+   */
   fun cell(x: Int, y: Int) = Cell(x, y)
+
   fun <E> cell(x: Int, y: Int, value: E) = CellValue(x, y, value)
   fun <E> cell(cell: Cell, value: E) = cell(cell.x, cell.y, value)
 

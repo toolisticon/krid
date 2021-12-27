@@ -1,6 +1,7 @@
 package io.toolisticon.lib.krid
 
 import io.toolisticon.lib.krid.Krids.krid
+import io.toolisticon.lib.krid.Krids.kridInt
 import io.toolisticon.lib.krid.model.Column
 import io.toolisticon.lib.krid.model.Row
 import io.toolisticon.lib.krid.model.pair
@@ -85,5 +86,20 @@ internal class KridsTest {
     assertThatThrownBy { krid(listOf(listOf(true, true), listOf(true)), false) }
       .isInstanceOf(IllegalArgumentException::class.java)
       .hasMessage("all rows must have same size: [[true, true], [true]]")
+  }
+
+  @Test
+  fun `create int krid from string`() {
+    val krid = kridInt(
+      """
+      12
+      34
+      56
+    """.trimIndent()
+    )
+
+    assertThat(krid.width).isEqualTo(2)
+    assertThat(krid.height).isEqualTo(3)
+    assertThat(krid.get(1, 2)).isEqualTo(6)
   }
 }
