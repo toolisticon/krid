@@ -1,5 +1,7 @@
 # krid
 
+[![stable](https://img.shields.io/badge/lifecycle-STABLE-green.svg)](https://github.com/toolisticon#stable)
+
 Your one-stop library to support two dimensional **K**otlin g**RID**s.
 
 [![Build Status](https://github.com/toolisticon/krid/workflows/Development%20branches/badge.svg)](https://github.com/toolisticon/krid/actions)
